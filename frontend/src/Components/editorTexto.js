@@ -1,23 +1,27 @@
-import React, { useImperativeHandle, useEffect } from 'react';
+import React, { useImperativeHandle, useEffect,useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from "@codemirror/lang-cpp";
 //hola
+
 const Editor = React.forwardRef((props, referencia) => {
-    //Actualizamos el contenido del editor
-    useEffect(() => {
-        setCode(props.cod);
-    }, [props.cod]);
-    const [code, setCode] = React.useState(props.cod);
-    //Envio de datos
+    const [code, setCode] = useState(props.cod);
+
     useImperativeHandle(referencia, () => ({
         getCode() {
             return code;
         },
         establecerCodigo(codigo) {
             setCode(codigo);
+        },
+        setEditorCode: (newCode) => {
+            setCode(newCode);
         }
-    }),
-    )
+    }));
+
+    useEffect(() => {
+        setCode(props.cod);
+        console.log(props.cod)
+    }, [props.cod]);
 
     return (
         <CodeMirror
@@ -25,13 +29,12 @@ const Editor = React.forwardRef((props, referencia) => {
             height="580px"
             theme={'dark'}
             extensions={[cpp()]}
-            
+            readOnly={props.write}
             onChange={(value, viewUpdate) => {
                 setCode(value);
-                referencia.current.value = code;
             }}
         />
     );
-})
+});
 
 export default Editor;
