@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState  } from 'react';
 import Editor from "./editorTexto";
 import './Estilo.css'
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from "@codemirror/lang-cpp";
-
+import { saveAs } from 'file-saver';
 function Principal() {
-
     const inputFileRef = useRef(null);
     const [codigo, setCodigo] = useState('');
+    const [nombreArchivo, setNombreArchivo] = useState('');
 
     const abrirArchivo = (event) => {
         const file = event.target.files[0];
@@ -17,14 +17,38 @@ function Principal() {
             const fileContent = event.target.result;
             console.log("Contenido del archivo abierto:", fileContent);
             setCodigo(fileContent); // Actualizar el estado con el contenido del archivo
+            setNombreArchivo(file.name); // Actualizar el nombre del archivo
         };
         
         reader.readAsText(file);
     };
-
+    const GuardarArchivo = () => {
+        if (codigo.trim() !== '') {
+            if (nombreArchivo.trim() !== '') {
+                // Crear un nuevo Blob con el contenido del editor
+                const blob = new Blob([codigo], { type: 'text/plain;charset=utf-8' });
+                // Intentar guardar con el mismo nombre
+                if (navigator.msSaveOrOpenBlob) {
+                    navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+                } else {
+                    saveAs(blob, nombreArchivo);
+                }
+                console.log('Archivo guardado exitosamente.');
+            } else {
+                console.log('No se ha proporcionado un nombre de archivo.');
+            }
+        } else {
+            console.log('No hay contenido para guardar.');
+        }
+    };
+    const CrearArchivo = () => {
+        setCodigo(''); // Establecer el contenido como vacío
+        setNombreArchivo('NuevoArchivo.sc'); // Establecer un nombre predeterminado para el nuevo archivo
+    };
     const onchangecodigo = (value) => {
         setCodigo(value); // Actualizar el estado con el valor del editor
     };
+
 
     return (
         <div>
@@ -37,12 +61,12 @@ function Principal() {
                     <input ref={inputFileRef} onChange={abrirArchivo} id="file-upload" type="file" accept=".sc"></input>
                 </div>
                 <div style={{ marginLeft: "210px" }}>
-                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(0, 128, 128, 0.2)", color: "white",fontWeight: "bold"}}>
-                        <i className="fa fa-bookmark" aria-hidden="true"></i> Guardar
-                    </button>
+                <button className="tab_botones_inicio_diseno" style={{ background: "rgba(0, 128, 128, 0.2)", color: "white", fontWeight: "bold" }} onClick={GuardarArchivo}>
+    <i className="fa fa-bookmark" aria-hidden="true"></i> Guardar
+</button>
                 </div>
                 <div style={{ marginLeft: "350px" }}>
-                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(0, 128, 128, 0.2)", color: "white",fontWeight: "bold", width: "150px"}}>
+                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(0, 128, 128, 0.2)", color: "white",fontWeight: "bold", width: "150px"}}onClick={CrearArchivo}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Crear Archivo
                     </button>
                 </div>

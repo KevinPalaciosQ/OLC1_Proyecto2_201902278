@@ -8,6 +8,7 @@
 
 %%
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES REGULARES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+([a-zA-Z"_"])[a-z0-9A-Z"_""ñ""Ñ"]*      {yytext=yytext.toLowerCase();return "IDENTIFICADOR";}
 
 \s+                 //espacios en blanco
 "//".*		//comentario simple	
@@ -97,4 +98,18 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {if($2!=false)$1.push($2);$$=$1;}
             |INSTRUCCION                     {$$=($1!=false) ?[$1]:[];}
 ;
 
+INSTRUCCION : DECLARACION PUNTOYCOMA
+;
 
+DECLARACION : TIPODEDATO IDENTIFICADOR IGUAL EXPRESION
+;
+
+TIPODEDATO:
+            R_INT
+            |R_DOUBLE
+            |bool
+            |R_CHAR
+            |R_CADENA
+;
+EXPRESION: IDENTIFICADOR
+;
