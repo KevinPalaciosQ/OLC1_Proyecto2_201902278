@@ -59,8 +59,8 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES NATIVAS<<<<<<<<<<<<<<<<<<<<<<<<<<
 "+"                     return "MAS";
 "-"                     return "MENOS";
-"*"                     return "ASTERISCO"; 
-"/"                     return "DIAGONAL";
+"*"                     return "MULTIPLICACION"; 
+"/"                     return "DIVISION";
 "pow"                   return "POTENCIA";
 "%"                     return "MODULO";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>OPERADORES RELACIONALES<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -101,15 +101,26 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {if($2!=false)$1.push($2);$$=$1;}
 INSTRUCCION : DECLARACION PUNTOYCOMA
 ;
 
-DECLARACION : TIPODEDATO IDENTIFICADOR IGUAL EXPRESION
+DECLARACION : TIPODECLARACION IDENTIFICADOR IGUAL EXPRESION
+        |TIPODECLARACION IDENTIFICADOR
 ;
 
-TIPODEDATO:
+TIPODECLARACION:
             R_INT
             |R_DOUBLE
             |bool
             |R_CHAR
             |R_CADENA
 ;
-EXPRESION: IDENTIFICADOR
+EXPRESION: EXPRESION MAS EXPRESION
+        |EXPRESION MENOS EXPRESION
+        |EXPRESION MULTIPLICACION EXPRESION
+        |EXPRESION DIVISION EXPRESION
+        |EXPRESION POTENCIA EXPRESION
+        |EXPRESION MODULO EXPRESION
+        |IDENTIFICADOR
+;
+
+CONTEO: IDENTIFICADOR DECREMENTO
+        |IDENTIFICADOR INCREMENTO
 ;

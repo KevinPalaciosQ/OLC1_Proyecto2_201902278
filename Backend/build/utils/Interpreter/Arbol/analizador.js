@@ -72,12 +72,12 @@
   }
 */
 var analizador = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[1,8],$V3=[1,9],$V4=[1,10],$V5=[5,13,14,15,16,17];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[1,8],$V3=[1,9],$V4=[1,10],$V5=[5,13,14,15,16,17],$V6=[1,17],$V7=[1,18],$V8=[1,19],$V9=[1,20],$Va=[1,21],$Vb=[1,22],$Vc=[1,23];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"INI":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"PUNTOYCOMA":8,"TIPODEDATO":9,"IDENTIFICADOR":10,"IGUAL":11,"EXPRESION":12,"R_INT":13,"R_DOUBLE":14,"bool":15,"R_CHAR":16,"R_CADENA":17,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",8:"PUNTOYCOMA",10:"IDENTIFICADOR",11:"IGUAL",13:"R_INT",14:"R_DOUBLE",15:"bool",16:"R_CHAR",17:"R_CADENA"},
-productions_: [0,[3,2],[4,2],[4,1],[6,2],[7,4],[9,1],[9,1],[9,1],[9,1],[9,1],[12,1]],
+symbols_: {"error":2,"INI":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"PUNTOYCOMA":8,"TIPODECLARACION":9,"IDENTIFICADOR":10,"IGUAL":11,"EXPRESION":12,"R_INT":13,"R_DOUBLE":14,"bool":15,"R_CHAR":16,"R_CADENA":17,"MAS":18,"MENOS":19,"MULTIPLICACION":20,"DIVISION":21,"POTENCIA":22,"MODULO":23,"CONTEO":24,"DECREMENTO":25,"INCREMENTO":26,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",8:"PUNTOYCOMA",10:"IDENTIFICADOR",11:"IGUAL",13:"R_INT",14:"R_DOUBLE",15:"bool",16:"R_CHAR",17:"R_CADENA",18:"MAS",19:"MENOS",20:"MULTIPLICACION",21:"DIVISION",22:"POTENCIA",23:"MODULO",25:"DECREMENTO",26:"INCREMENTO"},
+productions_: [0,[3,2],[4,2],[4,1],[6,2],[7,4],[7,2],[9,1],[9,1],[9,1],[9,1],[9,1],[12,3],[12,3],[12,3],[12,3],[12,3],[12,3],[12,1],[24,2],[24,2]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -94,8 +94,8 @@ this.$=($$[$0]!=false) ?[$$[$0]]:[];
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},{1:[3]},{5:[1,11],6:12,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},o($V5,[2,3]),{8:[1,13]},{10:[1,14]},{10:[2,6]},{10:[2,7]},{10:[2,8]},{10:[2,9]},{10:[2,10]},{1:[2,1]},o($V5,[2,2]),o($V5,[2,4]),{11:[1,15]},{10:[1,17],12:16},{8:[2,5]},{8:[2,11]}],
-defaultActions: {6:[2,6],7:[2,7],8:[2,8],9:[2,9],10:[2,10],11:[2,1],16:[2,5],17:[2,11]},
+table: [{3:1,4:2,6:3,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},{1:[3]},{5:[1,11],6:12,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},o($V5,[2,3]),{8:[1,13]},{10:[1,14]},{10:[2,7]},{10:[2,8]},{10:[2,9]},{10:[2,10]},{10:[2,11]},{1:[2,1]},o($V5,[2,2]),o($V5,[2,4]),{8:[2,6],11:[1,15]},{10:$V6,12:16},{8:[2,5],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},o([8,18,19,20,21,22,23],[2,18]),{10:$V6,12:24},{10:$V6,12:25},{10:$V6,12:26},{10:$V6,12:27},{10:$V6,12:28},{10:$V6,12:29},{8:[2,12],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},{8:[2,13],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},{8:[2,14],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},{8:[2,15],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},{8:[2,16],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc},{8:[2,17],18:$V7,19:$V8,20:$V9,21:$Va,22:$Vb,23:$Vc}],
+defaultActions: {6:[2,7],7:[2,8],8:[2,9],9:[2,10],10:[2,11],11:[2,1]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -658,9 +658,9 @@ case 41:return "MAS";
 break;
 case 42:return "MENOS";
 break;
-case 43:return "ASTERISCO"; 
+case 43:return "MULTIPLICACION"; 
 break;
-case 44:return "DIAGONAL";
+case 44:return "DIVISION";
 break;
 case 45:return "POTENCIA";
 break;
