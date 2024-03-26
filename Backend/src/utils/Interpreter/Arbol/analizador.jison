@@ -85,8 +85,15 @@
 <<EOF>>             return 'EOF';
 .                   {console.log(yylloc.first_line, yylloc.first_columm, 'Lexico', yytext)}
 /lex
-
-
+//PRESEDENCIA
+%left INTERROGACION
+%left OR
+%left AND
+%left MAS MENOS
+%left MULTIPLICACION DIVISION MODULO
+%left POTENCIA
+%right not
+//INICIO
 %start INI
 
 %%
