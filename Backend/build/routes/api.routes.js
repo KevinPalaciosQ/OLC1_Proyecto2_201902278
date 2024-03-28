@@ -8,5 +8,5 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 router.get("/ping", api_controler_1.default.ping);
 router.get("/index", api_controler_1.default.parse);
-//router.post("/parse", controller.parse)
+router.post("/parse", api_controler_1.default.parse);
 exports.default = router;

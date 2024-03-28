@@ -3,5 +3,5 @@ import express from "express"
 const router = express.Router();
 router.get("/ping", controller.ping)
 router.get("/index", controller.parse)
-//router.post("/parse", controller.parse)
+router.post("/parse", controller.parse)
 export default router;

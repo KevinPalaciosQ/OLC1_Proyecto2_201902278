@@ -72,12 +72,12 @@
   }
 */
 var analizador = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,6],$V1=[1,7],$V2=[1,8],$V3=[1,9],$V4=[1,10],$V5=[5,13,14,15,16,17],$V6=[1,17],$V7=[1,20],$V8=[1,21],$V9=[1,22],$Va=[1,23],$Vb=[8,18,19,20,21,22,23],$Vc=[8,18,19],$Vd=[8,18,19,20,21,23];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,8],$V1=[1,9],$V2=[1,10],$V3=[1,11],$V4=[1,12],$V5=[1,7],$V6=[5,14,15,16,17,18,28],$V7=[1,21],$V8=[1,24],$V9=[1,25],$Va=[1,26],$Vb=[1,27],$Vc=[8,19,20,21,22,23,24],$Vd=[8,19,20],$Ve=[8,19,20,21,22,24];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"INI":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"PUNTOYCOMA":8,"TIPODECLARACION":9,"IDENTIFICADOR":10,"IGUAL":11,"EXPRESION":12,"R_INT":13,"R_DOUBLE":14,"bool":15,"R_CHAR":16,"R_CADENA":17,"MAS":18,"MENOS":19,"MULTIPLICACION":20,"DIVISION":21,"POTENCIA":22,"MODULO":23,"CONTEO":24,"DECREMENTO":25,"INCREMENTO":26,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",8:"PUNTOYCOMA",10:"IDENTIFICADOR",11:"IGUAL",13:"R_INT",14:"R_DOUBLE",15:"bool",16:"R_CHAR",17:"R_CADENA",18:"MAS",19:"MENOS",20:"MULTIPLICACION",21:"DIVISION",22:"POTENCIA",23:"MODULO",25:"DECREMENTO",26:"INCREMENTO"},
-productions_: [0,[3,2],[4,2],[4,1],[6,2],[7,4],[7,2],[9,1],[9,1],[9,1],[9,1],[9,1],[12,3],[12,3],[12,3],[12,3],[12,3],[12,3],[12,1],[24,2],[24,2]],
+symbols_: {"error":2,"INI":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"PUNTOYCOMA":8,"SENTENCIASCONTROL":9,"TIPODECLARACION":10,"IDENTIFICADOR":11,"IGUAL":12,"EXPRESION":13,"R_INT":14,"R_DOUBLE":15,"bool":16,"R_CHAR":17,"R_CADENA":18,"MAS":19,"MENOS":20,"MULTIPLICACION":21,"DIVISION":22,"POTENCIA":23,"MODULO":24,"CONTEO":25,"DECREMENTO":26,"INCREMENTO":27,"IF":28,"CORCHETEABRE":29,"CORCHETECIERRA":30,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",8:"PUNTOYCOMA",11:"IDENTIFICADOR",12:"IGUAL",14:"R_INT",15:"R_DOUBLE",16:"bool",17:"R_CHAR",18:"R_CADENA",19:"MAS",20:"MENOS",21:"MULTIPLICACION",22:"DIVISION",23:"POTENCIA",24:"MODULO",26:"DECREMENTO",27:"INCREMENTO",28:"IF",29:"CORCHETEABRE",30:"CORCHETECIERRA"},
+productions_: [0,[3,2],[4,2],[4,1],[6,2],[6,1],[7,4],[7,2],[10,1],[10,1],[10,1],[10,1],[10,1],[13,3],[13,3],[13,3],[13,3],[13,3],[13,3],[13,1],[25,2],[25,2],[9,3]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -94,8 +94,8 @@ this.$=($$[$0]!=false) ?[$$[$0]]:[];
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},{1:[3]},{5:[1,11],6:12,7:4,9:5,13:$V0,14:$V1,15:$V2,16:$V3,17:$V4},o($V5,[2,3]),{8:[1,13]},{10:[1,14]},{10:[2,7]},{10:[2,8]},{10:[2,9]},{10:[2,10]},{10:[2,11]},{1:[2,1]},o($V5,[2,2]),o($V5,[2,4]),{8:[2,6],11:[1,15]},{10:$V6,12:16},{8:[2,5],18:[1,18],19:[1,19],20:$V7,21:$V8,22:$V9,23:$Va},o($Vb,[2,18]),{10:$V6,12:24},{10:$V6,12:25},{10:$V6,12:26},{10:$V6,12:27},{10:$V6,12:28},{10:$V6,12:29},o($Vc,[2,12],{20:$V7,21:$V8,22:$V9,23:$Va}),o($Vc,[2,13],{20:$V7,21:$V8,22:$V9,23:$Va}),o($Vd,[2,14],{22:$V9}),o($Vd,[2,15],{22:$V9}),o($Vb,[2,16]),o($Vd,[2,17],{22:$V9})],
-defaultActions: {6:[2,7],7:[2,8],8:[2,9],9:[2,10],10:[2,11],11:[2,1]},
+table: [{3:1,4:2,6:3,7:4,9:5,10:6,14:$V0,15:$V1,16:$V2,17:$V3,18:$V4,28:$V5},{1:[3]},{5:[1,13],6:14,7:4,9:5,10:6,14:$V0,15:$V1,16:$V2,17:$V3,18:$V4,28:$V5},o($V6,[2,3]),{8:[1,15]},o($V6,[2,5]),{11:[1,16]},{29:[1,17]},{11:[2,8]},{11:[2,9]},{11:[2,10]},{11:[2,11]},{11:[2,12]},{1:[2,1]},o($V6,[2,2]),o($V6,[2,4]),{8:[2,7],12:[1,18]},{30:[1,19]},{11:$V7,13:20},o($V6,[2,22]),{8:[2,6],19:[1,22],20:[1,23],21:$V8,22:$V9,23:$Va,24:$Vb},o($Vc,[2,19]),{11:$V7,13:28},{11:$V7,13:29},{11:$V7,13:30},{11:$V7,13:31},{11:$V7,13:32},{11:$V7,13:33},o($Vd,[2,13],{21:$V8,22:$V9,23:$Va,24:$Vb}),o($Vd,[2,14],{21:$V8,22:$V9,23:$Va,24:$Vb}),o($Ve,[2,15],{23:$Va}),o($Ve,[2,16],{23:$Va}),o($Vc,[2,17]),o($Ve,[2,18],{23:$Va})],
+defaultActions: {8:[2,8],9:[2,9],10:[2,10],11:[2,11],12:[2,12],13:[2,1]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -584,7 +584,7 @@ case 4:return "R_INT";
 break;
 case 5:return "R_DOUBLE";
 break;
-case 6:return 15;
+case 6:return 16;
 break;
 case 7:return "R_CHAR";
 break;
