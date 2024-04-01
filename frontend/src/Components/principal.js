@@ -111,7 +111,7 @@ function Principal() {
 
             </div>
             <button className='enviar'>▷</button>
-            <button className='clean' style={{fontWeight: "bold"}} >Limpiar</button>
+            
             {/*-----------------------------------------*/}
         </div >
     );
