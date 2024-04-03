@@ -1,14 +1,23 @@
 import React, { useRef, useState  } from 'react';
-import Editor from "./editorTexto";
 import './Estilo.css'
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from "@codemirror/lang-cpp";
 import { saveAs } from 'file-saver';
+import Services from '../Services/Service';
 function Principal() {
+    //         id,   funcion
+    //const [error, setError] = useState(''); // Estado para almacenar Errores
     const inputFileRef = useRef(null);
     const [codigo, setCodigo] = useState('');
     const [nombreArchivo, setNombreArchivo] = useState('');
-
+    const [salida, setSalida] = useState(''); // Estado para almacenar la salida del analizador
+    const ejecutar  = async() => {
+        const response = await Services.parse(codigo);
+        console.log("xd"+response.consola);    
+        setSalida(response.consola);
+        
+    }
+    
     const abrirArchivo = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -105,12 +114,19 @@ function Principal() {
                     {/* Editor de Texto para Salida */}
                     <div style={{ width: "49%", marginTop: "0%" }}>
                         <h2 style={{ color: "white", fontWeight: "bold" }} >Salida </h2>
-                        <Editor className="editorT"  write={true}  />
+                        <CodeMirror
+                            value={salida}
+                            height="580px"
+                            theme={'dark'}
+                            extensions={[cpp()]}
+                            // onChange={(e)=>{setSalida(e.target.value)}}
+                        />
+                        {/* <Editor className="editorT"  write={true} value={salida}onChange={(e)=>{setSalida(e.target.value)}} /> */}
                         </div>
                 </div>
 
             </div>
-            <button className='enviar'>▷</button>
+            <button className='enviar' onClick={ejecutar}>▷</button>
             
             {/*-----------------------------------------*/}
         </div >
