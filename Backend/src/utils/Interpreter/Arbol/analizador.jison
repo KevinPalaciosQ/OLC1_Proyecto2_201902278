@@ -110,7 +110,6 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {if($2!=false)$1.push($2);$$=$1;}
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
         |SENTENCIASCONTROL
         |OPERADORESRELACIONALES
-
         |FUNCIONCOUT
         
 ;
@@ -126,6 +125,8 @@ TIPODECLARACION:
             |R_CHAR
             |R_CADENA
 ;
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 EXPRESION: EXPRESION MAS EXPRESION
         |EXPRESION MENOS EXPRESION
         |EXPRESION MULTIPLICACION EXPRESION
@@ -175,20 +176,22 @@ TIPOVECTOR: R_INT
 ;
 LISTAVALORES:
 ;
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.15.12 ACCESO VECTORES<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.15.12 ACCESO VECTORES<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.11 FINALIZACION Y ENCAPSULAMIENTO<<<<<<<<<<<<<<<<
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.11 ACCESO VECTORES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ACCESOVECTORES: IDENTIFICADOR CORCHETEABRE EXPRESION CORCHETECIERRA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.15.13 MODIFICACIONES VECTORES<<<<<<<<<<<<<<<<<<<<
 MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION PUNTOYCOMA
         |ID CORCHETEABRE EXPRESION CORCHETECIERRA CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION PUNTOYCOMA
 ;
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 METODOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA
         |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA
 ;
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.2 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.23 FUNCION TOUPPER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
