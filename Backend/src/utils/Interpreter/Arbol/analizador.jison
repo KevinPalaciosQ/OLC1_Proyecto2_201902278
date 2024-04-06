@@ -1,5 +1,5 @@
 %{
-
+//importaciones
 %}
 
 %lex
@@ -8,8 +8,20 @@
 
 %%
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES REGULARES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-([a-zA-Z"_"])[a-z0-9A-Z"_""ñ""Ñ"]*      {yytext=yytext.toLowerCase();return "IDENTIFICADOR";}
+[A-Za-z]+["_"0-9A-Za-z]*    return 'IDENTIFICADOR';
+[0-9]+                      return 'ENTERO';
+[0-9]+"."[0-9]+             return 'DECIMAL';  
+\'([^']|"\\n"|"\\r"|"\\t")*\'    {
+                        //Quitamos las comillas simples
+                       yytext=yytext.slice(1, -1);
+                       return 'CARACTER';
+                    }                               
 
+([\"]("\\\""|[^"])*[^\\][\"])|[\"][\"]   {
+                        //Quitamos las comillas dobles
+                        yytext=yytext.slice(1, -1);
+                        return 'CADENA';
+                    }
 \s+                 //espacios en blanco
 "//".*		//comentario simple	
 // comentario multiples líneas                              
