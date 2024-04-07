@@ -108,11 +108,11 @@
 %left POTENCIA
 %right not
 //INICIO
-%start INI
+%start INIT
 
 %%
 
-INI: INSTRUCCIONES EOF {return $1;}
+INIT: INSTRUCCIONES EOF {return $1;}
 ;
 
 INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {if($2!=false)$1.push($2);$$=$1;}
