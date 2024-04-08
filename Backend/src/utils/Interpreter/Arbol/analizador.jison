@@ -115,8 +115,10 @@
 INIT: INSTRUCCIONES EOF {return $1;}
 ;
 
-INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {if($2!=false)$1.push($2);$$=$1;}
-            |INSTRUCCION                     {$$=($1!=false) ?[$1]:[];}
+INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
+            |INSTRUCCION                     {$$=[$1];}
+            |INVALID //errores Léxicos
+            |error PUNTOYCOMA//errores Sintácticos
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
@@ -146,6 +148,8 @@ EXPRESION: EXPRESION MAS EXPRESION
         |EXPRESION POTENCIA EXPRESION
         |EXPRESION MODULO EXPRESION
         |IDENTIFICADOR
+        |ENTERO 
+        |CADENA
 ;
 
 
