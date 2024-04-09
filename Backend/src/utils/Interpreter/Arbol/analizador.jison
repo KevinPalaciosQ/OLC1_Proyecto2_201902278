@@ -1,5 +1,8 @@
 %{
 //importaciones
+const nativo = require('./Expresions/Native');
+const Tipo = require("./Symbol/Type");
+const impresioncout = require('./Instructions/Cout');   
 %}
 
 %lex
@@ -8,24 +11,12 @@
 
 %%
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES REGULARES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-[A-Za-z]+["_"0-9A-Za-z]*    return 'IDENTIFICADOR';
-[0-9]+                      return 'ENTERO';
-[0-9]+"."[0-9]+             return 'DECIMAL';  
-\'([^']|"\\n"|"\\r"|"\\t")*\'    {
-                        //Quitamos las comillas simples
-                       yytext=yytext.slice(1, -1);
-                       return 'CARACTER';
-                    }                               
-
-([\"]("\\\""|[^"])*[^\\][\"])|[\"][\"]   {
-                        //Quitamos las comillas dobles
-                        yytext=yytext.slice(1, -1);
-                        return 'CADENA';
-                    }
-\s+                 //espacios en blanco
 "//".*		//comentario simple	
 // comentario multiples líneas                              
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] {   }// comentario multiples líneas                              
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] {   }// comentario multiples líneas    
+
+\s+                 //espacios en blanco
+                          
 //>>>>>>>>>>>>>>>>>>>>>>>>>>TIPOS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "int"                  return "R_INT";
 "double"               return "R_DOUBLE";
@@ -60,7 +51,7 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>METODOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "void"                   return "VOID";
 "cout"                   return "COUT";
-"endl"                   return "ENDL"
+"endl"                   return "ENDL";
 "tolower"                return "TOLOWER";
 "toupper"                return "TOUPPER";
 "round"                  return "ROUND";
@@ -70,6 +61,7 @@
 "tostring"              return "TOSTRING";
 "c_str"                 return "C_STR";
 "execute"               return "EXECUTE";
+"imprimir"              return "RIMPRIMIR";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES NATIVAS<<<<<<<<<<<<<<<<<<<<<<<<<<
 "+"                     return "MAS";
 "-"                     return "MENOS";
@@ -95,6 +87,20 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>INCREMENTO/DECREMENTO<<<<<<<<<<<<<<<<<<<<<<<<<<
 "++"                    return "INCREMENTO";
 "--"                    return "DECREMENTO";
+[A-Za-z]+["_"0-9A-Za-z]*    return 'IDENTIFICADOR';
+[0-9]+                      return 'ENTERO';
+[0-9]+"."[0-9]+             return 'DECIMAL';  
+\'([^']|"\\n"|"\\r"|"\\t")*\'    {
+                        //Quitamos las comillas simples
+                       yytext=yytext.slice(1, -1);
+                       return 'CARACTER';
+                    }                               
+
+([\"]("\\\""|[^"])*[^\\][\"])|[\"][\"]   {
+                        //Quitamos las comillas dobles
+                        yytext=yytext.slice(1, -1);
+                        return 'CADENA';
+                    }
 //>>>>>>>>>>>>>>>>>>>>>>>>>>PALABRAS RESERVADAS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 <<EOF>>             return 'EOF';
 .                   {console.log(yylloc.first_line, yylloc.first_columm, 'Lexico', yytext)}
@@ -117,14 +123,15 @@ INIT: INSTRUCCIONES EOF {return $1;}
 
 INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
             |INSTRUCCION                     {$$=[$1];}
-            |INVALID //errores Léxicos
-            |error PUNTOYCOMA//errores Sintácticos
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
+        |FUNCIONCOUT {$$=$1;console.log("si entra xd");}
+        |IMPRIMIR {$$=$1;console.log("IMPRIMIR xd");}
+        |INVALID {;} //errores Léxicos
+        |error PUNTOYCOMA{;}//errores Sintácticos
         |SENTENCIASCONTROL
         |OPERADORESRELACIONALES
-        |FUNCIONCOUT
         
 ;
 
@@ -141,17 +148,11 @@ TIPODECLARACION:
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-EXPRESION: EXPRESION MAS EXPRESION
-        |EXPRESION MENOS EXPRESION
-        |EXPRESION MULTIPLICACION EXPRESION
-        |EXPRESION DIVISION EXPRESION
-        |EXPRESION POTENCIA EXPRESION
-        |EXPRESION MODULO EXPRESION
-        |IDENTIFICADOR
-        |ENTERO 
-        |CADENA
+EXPRESION: ENTERO {$$=new nativo.default( Tipo.DataType.ENTERO, $1, @1.first_line, @1.first_column);}
+        |CADENA {$$=new nativo.default( Tipo.DataType.CADENA, $1, @1.first_line, @1.first_column);}
 ;
-
+IMPRIMIR: RIMPRIMIR PARABRE EXPRESION PARCIERRA PUNTOYCOMA  {$$=new impresioncout.default($3,@1.first_line,@1.first_column)}
+;
 
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
 ;
@@ -190,7 +191,7 @@ TIPOVECTOR: R_INT
         |R_CHAR
         |R_CADENA
 ;
-LISTAVALORES:
+LISTAVALORES: R_CADENA
 ;
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.11 ACCESO VECTORES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -204,8 +205,8 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA
-        |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA
+FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column);}
+        //|COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
@@ -231,5 +232,4 @@ FUNCIONCSTR: EXPRESION PUNTO C_STR PARABRE PARCIERRA PUNTOYCOMA
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.5 FUNCION EXECUTE<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONEXECUTE: EXECUTE IDENTIFICADOR PARABRE PARCIERRA PUNTOYCOMA 
         |EXECUTE IDENTIFICADOR PARABRE CORCHETEABRE EXPRESION CORCHETECIERRA PARCIERRA PUNTOYCOMA
-        
 ;

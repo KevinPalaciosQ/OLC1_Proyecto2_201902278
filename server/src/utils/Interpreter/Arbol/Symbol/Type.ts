@@ -1,6 +1,5 @@
 export default class Type {
     private tipo: DataType;
-  
     constructor(tipo: DataType) {
       this.tipo = tipo;
     }

@@ -10,3 +10,4 @@ router.get("/ping", api_controler_1.default.ping);
 router.get("/index", api_controler_1.default.parse);
 router.post("/parse", api_controler_1.default.parse);
 exports.default = router;
+//function, declaracion y asignacion

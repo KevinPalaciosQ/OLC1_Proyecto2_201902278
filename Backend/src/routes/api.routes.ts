@@ -5,3 +5,4 @@ router.get("/ping", controller.ping)
 router.get("/index", controller.parse)
 router.post("/parse", controller.parse)
 export default router;
+//function, declaracion y asignacion
