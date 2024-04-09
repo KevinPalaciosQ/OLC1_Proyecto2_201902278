@@ -17,9 +17,6 @@ var DataType;
 (function (DataType) {
     DataType[DataType["ENTERO"] = 0] = "ENTERO";
     DataType[DataType["CADENA"] = 1] = "CADENA";
-    DataType[DataType["BOOLEAN"] = 2] = "BOOLEAN";
-    DataType[DataType["DECIMAL"] = 3] = "DECIMAL";
-    DataType[DataType["VOID"] = 4] = "VOID";
-    DataType[DataType["IDENTIFICADOR"] = 5] = "IDENTIFICADOR";
-    DataType[DataType["INDEFINIDO"] = 6] = "INDEFINIDO";
+    DataType[DataType["IDENTIFICADOR"] = 2] = "IDENTIFICADOR";
+    DataType[DataType["INDEFINIDO"] = 3] = "INDEFINIDO";
 })(DataType || (exports.DataType = DataType = {}));

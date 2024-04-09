@@ -13,6 +13,7 @@ export default class Type {
   
 export enum DataType {
     ENTERO,
+        
     CADENA,
     BOOLEAN,
     DECIMAL,

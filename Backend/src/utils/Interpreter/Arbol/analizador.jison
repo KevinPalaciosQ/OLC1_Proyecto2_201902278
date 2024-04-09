@@ -14,9 +14,10 @@ const impresioncout = require('./Instructions/Cout');
 "//".*		//comentario simple	
 // comentario multiples líneas                              
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] {   }// comentario multiples líneas    
-
+//>>>>>>>>>>>>>>>>>>>>>>>>>>SE IGNORAN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 \s+                 //espacios en blanco
-                          
+[ \r\t]+ { }
+\n {}                          
 //>>>>>>>>>>>>>>>>>>>>>>>>>>TIPOS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "int"                  return "R_INT";
 "double"               return "R_DOUBLE";
@@ -96,14 +97,11 @@ const impresioncout = require('./Instructions/Cout');
                        return 'CARACTER';
                     }                               
 
-([\"]("\\\""|[^"])*[^\\][\"])|[\"][\"]   {
-                        //Quitamos las comillas dobles
-                        yytext=yytext.slice(1, -1);
-                        return 'CADENA';
-                    }
-//>>>>>>>>>>>>>>>>>>>>>>>>>>PALABRAS RESERVADAS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-<<EOF>>             return 'EOF';
-.                   {console.log(yylloc.first_line, yylloc.first_columm, 'Lexico', yytext)}
+\"[^\"]*\"                  { yytext=yytext.substr(1,yyleng-2); return 'CADENA'; }
+//>>>>>>>>>>>>>>>>>>>>>>>>>>CONTINUACION<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+<<EOF>>                     return 'EOF';
+.                           return 'INVALID'
 /lex
 //PRESEDENCIA
 %left INTERROGACION
@@ -126,8 +124,8 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
-        |FUNCIONCOUT {$$=$1;console.log("si entra xd");}
-        |IMPRIMIR {$$=$1;console.log("IMPRIMIR xd");}
+        |FUNCIONCOUT {$$=$1;}//console.log("si entra xd");}
+        |IMPRIMIR {$$=$1;}//console.log("IMPRIMIR xd");}
         |INVALID {;} //errores Léxicos
         |error PUNTOYCOMA{;}//errores Sintácticos
         |SENTENCIASCONTROL
@@ -148,10 +146,12 @@ TIPODECLARACION:
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-EXPRESION: ENTERO {$$=new nativo.default( Tipo.DataType.ENTERO, $1, @1.first_line, @1.first_column);}
-        |CADENA {$$=new nativo.default( Tipo.DataType.CADENA, $1, @1.first_line, @1.first_column);}
+EXPRESION: ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
+        |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
+                //{$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
+        //ENTERO {$$=new nativo.default(new Tipo.DataType.ENTERO, $1, @1.first_line, @1.first_column);}
 ;
-IMPRIMIR: RIMPRIMIR PARABRE EXPRESION PARCIERRA PUNTOYCOMA  {$$=new impresioncout.default($3,@1.first_line,@1.first_column)}
+IMPRIMIR: RIMPRIMIR PARABRE EXPRESION PARCIERRA PUNTOYCOMA  {$$=new impresioncout.default($3,@1.first_line,@1.first_column);}
 ;
 
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA

@@ -8,7 +8,6 @@ export default class Three {
   private errores: Array<Errores>;
   private consola: String;
   private tablaGlobal: tablaSimbolo;
-
   constructor(instrucciones: Array<Instruccion>) {
     this.instrucciones = instrucciones;
     this.consola = '';//consola inicializa en cadena vacia
@@ -43,5 +42,4 @@ export default class Three {
   public settablaGlobal(value: tablaSimbolo) {
     this.tablaGlobal = value;
   }
-
 }

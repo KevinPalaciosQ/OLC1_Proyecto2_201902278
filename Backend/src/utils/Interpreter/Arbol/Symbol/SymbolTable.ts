@@ -2,7 +2,7 @@ import Simbolo from './Symbol';
 
 export default class SymbolTable {
   private tablaAnterior: SymbolTable | any;
-  private tablaActual: Map<String, Simbolo>;
+  private tablaActual: Map<String, Simbolo>;//Map es una Tabla Hash
 
   constructor(anterior?: SymbolTable) {
     this.tablaAnterior = anterior;
@@ -14,7 +14,7 @@ export default class SymbolTable {
     return valor;
   }
 
-  public setValor(id: String, valor: Simbolo, declaration = true): any{
+  public setValor(id: String, valor: Simbolo): any{
     this.tablaActual.set(id, valor);
     console.log(id+"-"+this.tablaActual.get(id)?.getvalor());
     return null;

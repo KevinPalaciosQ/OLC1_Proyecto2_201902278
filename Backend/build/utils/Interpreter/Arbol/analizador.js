@@ -95,23 +95,20 @@ break;
 case 4:
 this.$=$$[$0-1]
 break;
-case 5:
-this.$=$$[$0];console.log("si entra xd");
-break;
-case 6:
-this.$=$$[$0];console.log("IMPRIMIR xd");
+case 5: case 6:
+this.$=$$[$0];
 break;
 case 7: case 8:
 ;
 break;
 case 18:
-this.$=new nativo.default( Tipo.DataType.ENTERO, $$[$0], _$[$0].first_line, _$[$0].first_column);
+this.$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$$[$0],_$[$0].first_line,_$[$0].first_column);
 break;
 case 19:
-this.$=new nativo.default( Tipo.DataType.CADENA, $$[$0], _$[$0].first_line, _$[$0].first_column);
+this.$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$$[$0],_$[$0].first_line,_$[$0].first_column);
 break;
 case 20:
-this.$=new impresioncout.default($$[$0-2],_$[$0-4].first_line,_$[$0-4].first_column)
+this.$=new impresioncout.default($$[$0-2],_$[$0-4].first_line,_$[$0-4].first_column);
 break;
 case 44:
 this.$=new impresioncout.default($$[$0-1],_$[$0-4].first_line,_$[$0-4].first_column);
@@ -706,146 +703,146 @@ case 1:
 break;
 case 2://espacios en blanco
 break;
-case 3:return "R_INT";
+case 3: 
 break;
-case 4:return "R_DOUBLE";
+case 4:
 break;
-case 5:return 20;
+case 5:return "R_INT";
 break;
-case 6:return "R_CHAR";
+case 6:return "R_DOUBLE";
 break;
-case 7:return "R_CADENA";
+case 7:return 20;
 break;
-case 8:return "COMA"; 
+case 8:return "R_CHAR";
 break;
-case 9:return "IGUAL";
+case 9:return "R_CADENA";
 break;
-case 10:return "PUNTOYCOMA";
+case 10:return "COMA"; 
 break;
-case 11:return "DOSPUNTOS";
+case 11:return "IGUAL";
 break;
-case 12:return "INTERROGACION";
+case 12:return "PUNTOYCOMA";
 break;
-case 13:return 26;
+case 13:return "DOSPUNTOS";
 break;
-case 14:return 27;
+case 14:return "INTERROGACION";
 break;
-case 15:return "LLAVEABRE";
+case 15:return 26;
 break;
-case 16:return "LLAVECIERRA";
+case 16:return 27;
 break;
-case 17:return "CORCHETECIERRA";
+case 17:return "LLAVEABRE";
 break;
-case 18:return "CORCHETEABRE";
+case 18:return "LLAVECIERRA";
 break;
-case 19:return "NEW";
+case 19:return "CORCHETECIERRA";
 break;
-case 20:return "IF";
+case 20:return "CORCHETEABRE";
 break;
-case 21:return "ELSE";
+case 21:return "NEW";
 break;
-case 22:return "SWITCH";
+case 22:return "IF";
 break;
-case 23:return "CASE";
+case 23:return "ELSE";
 break;
-case 24:return "DEFAULT";
+case 24:return "SWITCH";
 break;
-case 25:return "WHILE";
+case 25:return "CASE";
 break;
-case 26:return "FOR";
+case 26:return "DEFAULT";
 break;
-case 27:return "DO";
+case 27:return "WHILE";
 break;
-case 28:return "BREAK";
+case 28:return "FOR";
 break;
-case 29:return "CONTINUE";
+case 29:return "DO";
 break;
-case 30:return "RETURN";
+case 30:return "BREAK";
 break;
-case 31:return "VOID";
+case 31:return "CONTINUE";
 break;
-case 32:return "COUT";
+case 32:return "RETURN";
 break;
-case 33:return "ENDL";
+case 33:return "VOID";
 break;
-case 34:return "TOLOWER";
+case 34:return "COUT";
 break;
-case 35:return "TOUPPER";
+case 35:return "ENDL";
 break;
-case 36:return "ROUND";
+case 36:return "TOLOWER";
 break;
-case 37:return "LENGTH";
+case 37:return "TOUPPER";
 break;
-case 38:return "TYPEOF";
+case 38:return "ROUND";
 break;
-case 39:return "TOSTRING";
+case 39:return "LENGTH";
 break;
-case 40:return "C_STR";
+case 40:return "TYPEOF";
 break;
-case 41:return "EXECUTE";
+case 41:return "TOSTRING";
 break;
-case 42:return "RIMPRIMIR";
+case 42:return "C_STR";
 break;
-case 43:return "MAS";
+case 43:return "EXECUTE";
 break;
-case 44:return "MENOS";
+case 44:return "RIMPRIMIR";
 break;
-case 45:return "MULTIPLICACION"; 
+case 45:return "MAS";
 break;
-case 46:return "DIVISION";
+case 46:return "MENOS";
 break;
-case 47:return "POTENCIA";
+case 47:return "MULTIPLICACION"; 
 break;
-case 48:return "MODULO";
+case 48:return "DIVISION";
 break;
-case 49:return "IGUALDAD";
+case 49:return "POTENCIA";
 break;
-case 50:return "DIFERENTE";
+case 50:return "MODULO";
 break;
-case 51:return "MENOR";
+case 51:return "IGUALDAD";
 break;
-case 52:return "MENORIGUAL";
+case 52:return "DIFERENTE";
 break;
-case 53:return "MAYOR";
+case 53:return "MENOR";
 break;
-case 54:return "MAYORIGUAL";
+case 54:return "MENORIGUAL";
 break;
-case 55:return "OR";
+case 55:return "MAYOR";
 break;
-case 56:return "AND";
+case 56:return "MAYORIGUAL";
 break;
-case 57:return "NOT";
+case 57:return "OR";
 break;
-case 58:return "INCREMENTO";
+case 58:return "AND";
 break;
-case 59:return "DECREMENTO";
+case 59:return "NOT";
 break;
-case 60:return 15;
+case 60:return "INCREMENTO";
 break;
-case 61:return 23;
+case 61:return "DECREMENTO";
 break;
-case 62:return 'DECIMAL';  
+case 62:return 15;
 break;
-case 63:
+case 63:return 23;
+break;
+case 64:return 'DECIMAL';  
+break;
+case 65:
                         //Quitamos las comillas simples
                        yy_.yytext=yy_.yytext.slice(1, -1);
                        return 'CARACTER';
                     
 break;
-case 64:
-                        //Quitamos las comillas dobles
-                        yy_.yytext=yy_.yytext.slice(1, -1);
-                        return 24;
-                    
+case 66: yy_.yytext=yy_.yytext.substr(1,yy_.yyleng-2); return 24; 
 break;
-case 65:return 5;
+case 67:return 5;
 break;
-case 66:console.log(yy_.yylloc.first_line, yy_.yylloc.first_columm, 'Lexico', yy_.yytext)
+case 68:return 11
 break;
 }
 },
-rules: [/^(?:\/\/.*)/i,/^(?:[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/])/i,/^(?:\s+)/i,/^(?:int\b)/i,/^(?:double\b)/i,/^(?:(true|false)\b)/i,/^(?:char\b)/i,/^(?:std::string\b)/i,/^(?:,)/i,/^(?:=)/i,/^(?:;)/i,/^(?::)/i,/^(?:\?)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?:new\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:switch\b)/i,/^(?:case\b)/i,/^(?:default\b)/i,/^(?:while\b)/i,/^(?:for\b)/i,/^(?:do\b)/i,/^(?:break\b)/i,/^(?:continue\b)/i,/^(?:return\b)/i,/^(?:void\b)/i,/^(?:cout\b)/i,/^(?:endl\b)/i,/^(?:tolower\b)/i,/^(?:toupper\b)/i,/^(?:round\b)/i,/^(?:length\b)/i,/^(?:typeof\b)/i,/^(?:tostring\b)/i,/^(?:c_str\b)/i,/^(?:execute\b)/i,/^(?:imprimir\b)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:pow\b)/i,/^(?:%)/i,/^(?:==)/i,/^(?:!=)/i,/^(?:<)/i,/^(?:<=)/i,/^(?:>)/i,/^(?:>=)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:!)/i,/^(?:\+\+)/i,/^(?:--)/i,/^(?:[A-Za-z]+["_"0-9A-Za-z]*)/i,/^(?:[0-9]+)/i,/^(?:[0-9]+\.[0-9]+)/i,/^(?:'([^']|\\n|\\r|\\t)*')/i,/^(?:([\"](\\"|[^"])*[^\\][\"])|[\"][\"])/i,/^(?:$)/i,/^(?:.)/i],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],"inclusive":true}}
+rules: [/^(?:\/\/.*)/i,/^(?:[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/])/i,/^(?:\s+)/i,/^(?:[ \r\t]+)/i,/^(?:\n)/i,/^(?:int\b)/i,/^(?:double\b)/i,/^(?:(true|false)\b)/i,/^(?:char\b)/i,/^(?:std::string\b)/i,/^(?:,)/i,/^(?:=)/i,/^(?:;)/i,/^(?::)/i,/^(?:\?)/i,/^(?:\()/i,/^(?:\))/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?:new\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:switch\b)/i,/^(?:case\b)/i,/^(?:default\b)/i,/^(?:while\b)/i,/^(?:for\b)/i,/^(?:do\b)/i,/^(?:break\b)/i,/^(?:continue\b)/i,/^(?:return\b)/i,/^(?:void\b)/i,/^(?:cout\b)/i,/^(?:endl\b)/i,/^(?:tolower\b)/i,/^(?:toupper\b)/i,/^(?:round\b)/i,/^(?:length\b)/i,/^(?:typeof\b)/i,/^(?:tostring\b)/i,/^(?:c_str\b)/i,/^(?:execute\b)/i,/^(?:imprimir\b)/i,/^(?:\+)/i,/^(?:-)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:pow\b)/i,/^(?:%)/i,/^(?:==)/i,/^(?:!=)/i,/^(?:<)/i,/^(?:<=)/i,/^(?:>)/i,/^(?:>=)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:!)/i,/^(?:\+\+)/i,/^(?:--)/i,/^(?:[A-Za-z]+["_"0-9A-Za-z]*)/i,/^(?:[0-9]+)/i,/^(?:[0-9]+\.[0-9]+)/i,/^(?:'([^']|\\n|\\r|\\t)*')/i,/^(?:"[^\"]*")/i,/^(?:$)/i,/^(?:.)/i],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68],"inclusive":true}}
 });
 return lexer;
 })();

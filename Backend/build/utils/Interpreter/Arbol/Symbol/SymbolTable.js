@@ -9,7 +9,7 @@ class SymbolTable {
         let valor = this.tablaActual.get(id);
         return valor;
     }
-    setValor(id, valor, declaration = true) {
+    setValor(id, valor) {
         var _a;
         this.tablaActual.set(id, valor);
         console.log(id + "-" + ((_a = this.tablaActual.get(id)) === null || _a === void 0 ? void 0 : _a.getvalor()));
