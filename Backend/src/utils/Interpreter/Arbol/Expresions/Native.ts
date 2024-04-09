@@ -16,7 +16,8 @@ export default class Nativo extends Instruccion {
       if(this.tipoDato.getTipo() === DataType.ENTERO){
           return this.valor;
       }else if(this.tipoDato.getTipo() === DataType.CADENA){
-          return this.valor.toString();   
-      } 
-    }
-  }
+          return this.valor.toString().replace(/\\n/g,'\n').replace(/\\t/g,'\t').replace(/\'g/,"'").replace(/\\\\/g,'\\');   
+      } //double a valor 
+    }//char a .tostring
+
+  }//boolean a valor 

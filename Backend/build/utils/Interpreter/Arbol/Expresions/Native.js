@@ -14,8 +14,8 @@ class Nativo extends Instruccion_1.Instruccion {
             return this.valor;
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.CADENA) {
-            return this.valor.toString();
-        }
-    }
-}
+            return this.valor.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\'g/, "'").replace(/\\\\/g, '\\');
+        } //double a valor 
+    } //char a .tostring
+} //boolean a valor 
 exports.default = Nativo;

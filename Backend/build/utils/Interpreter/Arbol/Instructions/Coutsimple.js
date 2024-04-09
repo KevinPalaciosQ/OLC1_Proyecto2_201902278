@@ -30,19 +30,15 @@ const Instruccion_1 = require("../Abstract/Instruccion");
 const Error_1 = __importDefault(require("../Exceptions/Error"));
 const Type_1 = __importStar(require("../Symbol/Type"));
 class Cout extends Instruccion_1.Instruccion {
-    constructor(expresion, linea, columna, saltoextra) {
+    constructor(expresion, linea, columna) {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna); //Para compilar tipos de dato
         this.expresion = expresion;
-        this.saltoextra = saltoextra;
     }
     interpretar(arbol, tabla) {
         let valor = this.expresion.interpretar(arbol, tabla); //Obtener el valor de la expresion al interpretarlo 
         if (valor instanceof Error_1.default)
             return valor;
         console.log(valor);
-        if (this.saltoextra == "saltoextra") {
-            valor = valor + '\n';
-        }
         arbol.actualizaConsola(valor + '');
     }
 }

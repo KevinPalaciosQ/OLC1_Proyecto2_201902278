@@ -22,7 +22,7 @@ export default class Three {
     this.consola = value;
   }
   public actualizaConsola(uptodate: String) {//actualizar consola o agregar un nuevo dato
-    this.consola = `${this.consola}${uptodate}\n`;
+    this.consola = `${this.consola}${uptodate}`;
   }
   public getinstrucciones(): Array<Instruccion> {//Retorna arreglo de instrucciones
     return this.instrucciones;

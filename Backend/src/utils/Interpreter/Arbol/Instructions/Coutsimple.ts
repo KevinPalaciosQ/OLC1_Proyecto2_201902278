@@ -7,21 +7,16 @@ import Type, { DataType } from '../Symbol/Type';
 
 export default class Cout extends Instruccion {//implementando la interfaz de instruccion en esta clase 
   private expresion: Operacion;//Operacion->Instruccion
-  private saltoextra: string; // Declaración de la propiedad saltoextra
-  constructor(expresion: Operacion, linea: number, columna: number,saltoextra:string) {//Operacion Nativa a Instruccion; Operacion->Instruccion
+
+  constructor(expresion: Operacion, linea: number, columna: number) {//Operacion Nativa a Instruccion; Operacion->Instruccion
     super(new Type(DataType.INDEFINIDO), linea, columna);//Para compilar tipos de dato
     this.expresion = expresion;
-    this.saltoextra = saltoextra;
   }
 
   public interpretar(arbol: Three, tabla: SymbolTable) {
     let valor = this.expresion.interpretar(arbol, tabla);//Obtener el valor de la expresion al interpretarlo 
     if (valor instanceof Errores) return valor;
     console.log(valor)
-    if (this.saltoextra == "saltoextra") {
-      valor=valor + '\n';
-    }
     arbol.actualizaConsola(valor + '');
   }
- 
 }

@@ -3,6 +3,7 @@
 const nativo = require('./Expresions/Native');
 const Tipo = require("./Symbol/Type");
 const impresioncout = require('./Instructions/Cout');   
+const impresioncouts = require('./Instructions/Coutsimple');   
 %}
 
 %lex
@@ -62,7 +63,6 @@ const impresioncout = require('./Instructions/Cout');
 "tostring"              return "TOSTRING";
 "c_str"                 return "C_STR";
 "execute"               return "EXECUTE";
-"imprimir"              return "RIMPRIMIR";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES NATIVAS<<<<<<<<<<<<<<<<<<<<<<<<<<
 "+"                     return "MAS";
 "-"                     return "MENOS";
@@ -124,8 +124,7 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
-        |FUNCIONCOUT {$$=$1;}//console.log("si entra xd");}
-        |IMPRIMIR {$$=$1;}//console.log("IMPRIMIR xd");}
+        |FUNCIONCOUT {$$=$1;}
         |INVALID {;} //errores Léxicos
         |error PUNTOYCOMA{;}//errores Sintácticos
         |SENTENCIASCONTROL
@@ -148,10 +147,7 @@ TIPODECLARACION:
 
 EXPRESION: ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
         |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
-                //{$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
-        //ENTERO {$$=new nativo.default(new Tipo.DataType.ENTERO, $1, @1.first_line, @1.first_column);}
-;
-IMPRIMIR: RIMPRIMIR PARABRE EXPRESION PARCIERRA PUNTOYCOMA  {$$=new impresioncout.default($3,@1.first_line,@1.first_column);}
+
 ;
 
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
@@ -205,8 +201,8 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column);}
-        //|COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA
+FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
+        |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
