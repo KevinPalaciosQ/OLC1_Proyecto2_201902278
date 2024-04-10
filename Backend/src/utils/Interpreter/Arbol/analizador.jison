@@ -3,9 +3,11 @@
 const controller = require("../../../controller/parser/parser");//Lista de Errores 
 const errores = require("./Exceptions/Error");
 const nativo = require('./Expresions/Native');
+const aritmetico = require('./Expresions/Aritmetica');
 const Tipo = require("./Symbol/Type");
 const impresioncout = require('./Instructions/Cout');   
 const declaracion = require('./Instructions/Declaracion');
+
 
 %}
 
@@ -151,9 +153,12 @@ TIPODECLARACION: R_INT
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
 DECLARACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
 ;
-EXPRESION: ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
+EXPRESION:EXPRESION MAS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MENOS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
+        |ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
         |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
+        //|EXPRESION PARABRE EXPRESION PARCIERRA {$$=$1;}-----------------expresion (expresion);
         //double
         //char -caracter
         //id
