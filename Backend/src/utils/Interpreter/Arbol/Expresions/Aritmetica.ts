@@ -47,5 +47,7 @@ export default class Aritmetico extends Instruccion {
       SUMA,
       RESTA,
       DIVISION,
-      MULTIPLICACION
+      MULTIPLICACION,
+      POTENCIA,
+      MODULO
   }

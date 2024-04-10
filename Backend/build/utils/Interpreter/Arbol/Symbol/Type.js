@@ -16,7 +16,9 @@ exports.default = Type;
 var DataType;
 (function (DataType) {
     DataType[DataType["ENTERO"] = 0] = "ENTERO";
-    DataType[DataType["CADENA"] = 1] = "CADENA";
-    DataType[DataType["IDENTIFICADOR"] = 2] = "IDENTIFICADOR";
-    DataType[DataType["INDEFINIDO"] = 3] = "INDEFINIDO";
+    DataType[DataType["DECIMAL"] = 1] = "DECIMAL";
+    DataType[DataType["CADENA"] = 2] = "CADENA";
+    DataType[DataType["BOOLEAN"] = 3] = "BOOLEAN";
+    DataType[DataType["IDENTIFICADOR"] = 4] = "IDENTIFICADOR";
+    DataType[DataType["INDEFINIDO"] = 5] = "INDEFINIDO";
 })(DataType || (exports.DataType = DataType = {}));

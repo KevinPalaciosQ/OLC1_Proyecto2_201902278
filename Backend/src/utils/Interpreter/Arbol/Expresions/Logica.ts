@@ -3,7 +3,7 @@ import Arbol from '../Symbol/Three';
 import tablaSimbolo from '../Symbol/SymbolTable';
 import Tipo, {DataType} from '../Symbol/Type';
 
-export default class Relacional extends Instruccion {
+export default class Logica extends Instruccion {
   operacionIzq: Instruccion;
   operacionDer: Instruccion;
   tipo: tipoOp;
@@ -17,15 +17,19 @@ export default class Relacional extends Instruccion {
   }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        const validTypesOperations = [DataType.ENTERO, DataType.DECIMAL]//tipos de datos permitidos para operaciones relacionales 
+        const validTypesOperations = [DataType.BOOLEAN]
 
         let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
         let valueDer = this.operacionDer.interpretar(arbol, tabla);
         if(validTypesOperations.includes(this.operacionIzq.tipoDato.getTipo())
             && validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
-            if(this.tipo===tipoOp.MAYOR){        
-                this.tipoDato = new Tipo(DataType.BOOLEAN);
-                return valueIzq > valueDer;
+            if(this.tipo===tipoOp.OR){      
+                this.tipoDato = new Tipo(DataType.BOOLEAN);  
+                return valueIzq || valueDer;
+            }
+            else if(this.tipo===tipoOp.IGUAL){      
+                this.tipoDato = new Tipo(DataType.BOOLEAN);  
+                return valueIzq === valueDer;
             }
         }  else {
             return null;
@@ -34,8 +38,8 @@ export default class Relacional extends Instruccion {
 }
 
 export enum tipoOp{
-    MAYOR,
-    MENOR,
-    MAYOR_IGUAL,
-    MENOR_IGUAL
+    AND,
+    OR,
+    IGUAL,
+    DIFERENTE
 }

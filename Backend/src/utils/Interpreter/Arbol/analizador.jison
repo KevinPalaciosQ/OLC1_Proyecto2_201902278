@@ -4,6 +4,8 @@ const controller = require("../../../controller/parser/parser");//Lista de Error
 const errores = require("./Exceptions/Error");
 const nativo = require('./Expresions/Native');
 const aritmetico = require('./Expresions/Aritmetica');
+const relacional = require('./Expresions/Relacional');
+const logica = require('./Expresions/Logica');
 const Tipo = require("./Symbol/Type");
 const impresioncout = require('./Instructions/Cout');   
 const declaracion = require('./Instructions/Declaracion');
@@ -119,6 +121,7 @@ const declaracion = require('./Instructions/Declaracion');
 %left MULTIPLICACION DIVISION MODULO
 %left POTENCIA
 %right not
+%left MAYOR
 //INICIO
 %start INIT
 
@@ -155,15 +158,21 @@ DECLARACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA {$$=new declaracio
 ;
 EXPRESION:EXPRESION MAS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MENOS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION DIVISION EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.DIVISION,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MULTIPLICACION EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.MULTIPLICACION,$1,$3,@1.first_line,@1.first_column);}
         |ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
         |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
+
         //|EXPRESION PARABRE EXPRESION PARCIERRA {$$=$1;}-----------------expresion (expresion);
         //double
         //char -caracter
         //id
 ;
-
+EXPRESIONRELACIONAL: EXPRESION MAYOR EXPRESION {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
+;
+EXPRESIONLOGICA: EXPRESIONRELACIONAL OR EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
+;
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
 ;
 
@@ -215,7 +224,9 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
+FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
+        //|COUT MENOR MENOR EXPRESIONRELACIONAL  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
+        |COUT MENOR MENOR EXPRESIONLOGICA  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
         |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

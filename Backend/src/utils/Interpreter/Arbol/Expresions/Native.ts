@@ -19,6 +19,7 @@ export default class Nativo extends Instruccion {
           return this.valor.toString().replace(/\\n/g,'\n').replace(/\\t/g,'\t').replace(/\'g/,"'").replace(/\\\\/g,'\\');   
       }else if(this.tipoDato.getTipo() === DataType.IDENTIFICADOR){
         let value = tabla.getValor(this.valor);
+        this.tipoDato = get(value,"tipo",new Type(DataType.INDEFINIDO));//CASTEANDO A ENTERO 
         console.log(value);
         return get(value, 'valor');
       } 

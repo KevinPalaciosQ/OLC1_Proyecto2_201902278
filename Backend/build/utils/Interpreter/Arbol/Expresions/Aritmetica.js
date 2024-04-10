@@ -68,4 +68,6 @@ var tipoOp;
     tipoOp[tipoOp["RESTA"] = 1] = "RESTA";
     tipoOp[tipoOp["DIVISION"] = 2] = "DIVISION";
     tipoOp[tipoOp["MULTIPLICACION"] = 3] = "MULTIPLICACION";
+    tipoOp[tipoOp["POTENCIA"] = 4] = "POTENCIA";
+    tipoOp[tipoOp["MODULO"] = 5] = "MODULO";
 })(tipoOp || (exports.tipoOp = tipoOp = {}));

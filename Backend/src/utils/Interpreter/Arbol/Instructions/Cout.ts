@@ -6,9 +6,9 @@ import SymbolTable from '../Symbol/SymbolTable';
 import Type, { DataType } from '../Symbol/Type';
 
 export default class Cout extends Instruccion {//implementando la interfaz de instruccion en esta clase 
-  private expresion: Operacion;//Operacion->Instruccion
+  private expresion: Instruccion;//Operacion->Instruccion
   private saltoextra: string; // Declaración de la propiedad saltoextra
-  constructor(expresion: Operacion, linea: number, columna: number,saltoextra:string) {//Operacion Nativa a Instruccion; Operacion->Instruccion
+  constructor(expresion: Instruccion, linea: number, columna: number,saltoextra:string) {//Operacion Nativa a Instruccion; Operacion->Instruccion
     super(new Type(DataType.INDEFINIDO), linea, columna);//Para compilar tipos de dato
     this.expresion = expresion;
     this.saltoextra = saltoextra;
@@ -23,5 +23,4 @@ export default class Cout extends Instruccion {//implementando la interfaz de in
     }
     arbol.actualizaConsola(valor + '');
   }
- 
 }
