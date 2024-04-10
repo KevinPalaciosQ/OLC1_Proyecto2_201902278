@@ -27,19 +27,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
-const Error_1 = __importDefault(require("../Exceptions/Error"));
+const Symbol_1 = __importDefault(require("../Symbol/Symbol"));
 const Type_1 = __importStar(require("../Symbol/Type"));
-class Cout extends Instruccion_1.Instruccion {
-    constructor(expresion, linea, columna) {
-        super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna); //Para compilar tipos de dato
-        this.expresion = expresion;
+class Declaracion extends Instruccion_1.Instruccion {
+    constructor(id, tipo, valor, linea, columna) {
+        super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
+        this.id = id;
+        this.tipo = tipo;
+        this.valor = valor;
     }
     interpretar(arbol, tabla) {
-        let valor = this.expresion.interpretar(arbol, tabla); //Obtener el valor de la expresion al interpretarlo 
-        if (valor instanceof Error_1.default)
-            return valor;
-        console.log(valor);
-        arbol.actualizaConsola(valor + '');
+        tabla.setValor(this.id, new Symbol_1.default(this.tipo, this.id, this.valor.interpretar(arbol, tabla)));
+        return null;
     }
 }
-exports.default = Cout;
+exports.default = Declaracion;

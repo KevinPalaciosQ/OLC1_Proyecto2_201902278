@@ -1,15 +1,16 @@
-import { Instruccion } from '../Abstract/Instruccion';
-import Arbol from '../Symbol/Three';//Operacion
-import Simbolo from '../Symbol/Symbol';
-import tablaSimbolo from '../Symbol/SymbolTable';
-import Tipo, {DataType} from '../Symbol/Type';
+import { Instruccion } from "../Abstract/Instruccion";
+import Operacion from "../Expresions/Native";
+import Arbol from "../Symbol/Three";
+import Simbolo from "../Symbol/Symbol";
+import tablaSimbolo from "../Symbol/SymbolTable";
+import Tipo, {DataType} from "../Symbol/Type";
 
 export default class Declaracion extends Instruccion {
     private id: String;
     private tipo: Tipo;
-    private valor: Instruccion;
+    private valor: Operacion;//Valor guardado en la variable
     
-    constructor(id: String, tipo: Tipo, valor: Instruccion, linea: number, columna: number) {
+    constructor(id: String, tipo: Tipo, valor: Operacion, linea: number, columna: number) {
         super(new Tipo(DataType.INDEFINIDO), linea, columna);
         this.id = id;
         this.tipo = tipo;

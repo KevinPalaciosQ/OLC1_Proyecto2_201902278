@@ -119,6 +119,7 @@ function Principal() {
                             height="580px"
                             theme={'dark'}
                             extensions={[cpp()]}
+                            readOnly={true}
                             // onChange={(e)=>{setSalida(e.target.value)}}
                         />
                         {/* <Editor className="editorT"  write={true} value={salida}onChange={(e)=>{setSalida(e.target.value)}} /> */}

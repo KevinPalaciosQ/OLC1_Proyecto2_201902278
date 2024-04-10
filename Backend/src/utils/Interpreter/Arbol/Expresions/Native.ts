@@ -2,7 +2,7 @@ import { Instruccion } from '../Abstract/Instruccion';
 import Three from '../Symbol/Three';
 import SymbolTable from '../Symbol/SymbolTable';
 import Type, { DataType } from '../Symbol/Type';
-//import get from 'lodash/get';
+import get from 'lodash/get';
 export default class Nativo extends Instruccion {
     valor: any;//Valor del tipo de dato que se va a interpretar
   
@@ -17,7 +17,13 @@ export default class Nativo extends Instruccion {
           return this.valor;
       }else if(this.tipoDato.getTipo() === DataType.CADENA){
           return this.valor.toString().replace(/\\n/g,'\n').replace(/\\t/g,'\t').replace(/\'g/,"'").replace(/\\\\/g,'\\');   
-      } //double a valor 
-    }//char a .tostring
-
-  }//boolean a valor 
+      }else if(this.tipoDato.getTipo() === DataType.IDENTIFICADOR){
+        let value = tabla.getValor(this.valor);
+        console.log(value);
+        return get(value, 'valor');
+      } 
+    }
+  } 
+  //double a valor 
+  //char a .tostring
+  //boolean a valor

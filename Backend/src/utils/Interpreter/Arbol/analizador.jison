@@ -1,9 +1,12 @@
 %{
 //importaciones
+const controller = require("../../../controller/parser/parser");//Lista de Errores 
+const errores = require("./Exceptions/Error");
 const nativo = require('./Expresions/Native');
 const Tipo = require("./Symbol/Type");
 const impresioncout = require('./Instructions/Cout');   
-const impresioncouts = require('./Instructions/Coutsimple');   
+const declaracion = require('./Instructions/Declaracion');
+
 %}
 
 %lex
@@ -18,7 +21,10 @@ const impresioncouts = require('./Instructions/Coutsimple');
 //>>>>>>>>>>>>>>>>>>>>>>>>>>SE IGNORAN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 \s+                 //espacios en blanco
 [ \r\t]+ { }
-\n {}                          
+\n {}             
+//>>>>>>>>>>>>>>>>>>>>>>>>>>AUXILIARES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<             
+"entero"        return "RESINT";
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>TIPOS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "int"                  return "R_INT";
 "double"               return "R_DOUBLE";
@@ -125,29 +131,32 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
         |FUNCIONCOUT {$$=$1;}
-        |INVALID {;} //errores Léxicos
-        |error PUNTOYCOMA{;}//errores Sintácticos
+        |INVALID          {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
+        |error PUNTOYCOMA {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
         |SENTENCIASCONTROL
         |OPERADORESRELACIONALES
-        
+        |DECLARACIONN {$$=$1;}
 ;
 
 DECLARACION : TIPODECLARACION IDENTIFICADOR IGUAL EXPRESION
         |TIPODECLARACION IDENTIFICADOR
 ;
 
-TIPODECLARACION:
-            R_INT
+TIPODECLARACION: R_INT
             |R_DOUBLE
             |bool
             |R_CHAR
             |R_CADENA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+DECLARACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
+;
 EXPRESION: ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
         |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
-
+        |IDENTIFICADOR {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
+        //double
+        //char -caracter
+        //id
 ;
 
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
