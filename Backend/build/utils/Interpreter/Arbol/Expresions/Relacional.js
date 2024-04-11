@@ -43,6 +43,26 @@ class Relacional extends Instruccion_1.Instruccion {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
                 return valueIzq > valueDer;
             }
+            else if (this.tipo === tipoOp.MAYOR_IGUAL) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq >= valueDer;
+            }
+            else if (this.tipo === tipoOp.MENOR) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq < valueDer;
+            }
+            else if (this.tipo === tipoOp.MENOR_IGUAL) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq <= valueDer;
+            }
+            else if (this.tipo === tipoOp.IGUALACION) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq === valueDer;
+            }
+            else if (this.tipo === tipoOp.DIFERENCIACION) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq !== valueDer;
+            }
         }
         else {
             return null;
@@ -53,18 +73,9 @@ exports.default = Relacional;
 var tipoOp;
 (function (tipoOp) {
     tipoOp[tipoOp["MAYOR"] = 0] = "MAYOR";
-    tipoOp[tipoOp["MENOR"] = 1] = "MENOR";
-    tipoOp[tipoOp["MAYOR_IGUAL"] = 2] = "MAYOR_IGUAL";
+    tipoOp[tipoOp["MAYOR_IGUAL"] = 1] = "MAYOR_IGUAL";
+    tipoOp[tipoOp["MENOR"] = 2] = "MENOR";
     tipoOp[tipoOp["MENOR_IGUAL"] = 3] = "MENOR_IGUAL";
+    tipoOp[tipoOp["IGUALACION"] = 4] = "IGUALACION";
+    tipoOp[tipoOp["DIFERENCIACION"] = 5] = "DIFERENCIACION"; //.!=
 })(tipoOp || (exports.tipoOp = tipoOp = {}));
-///respaldo
-/*
-     interpretar(arbol:Arbol,tabla:tablaSimbolo){
-        let valueIzq = this.operacionIzq.interpretar(arbol,tabla);
-        let valueDer = this.operacionDer.interpretar(arbol,tabla);
-        if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN
-        && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN){
-
-
-        }
-        */ 

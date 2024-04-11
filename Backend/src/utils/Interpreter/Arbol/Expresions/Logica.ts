@@ -31,15 +31,23 @@ export default class Logica extends Instruccion {
                 this.tipoDato = new Tipo(DataType.BOOLEAN);  
                 return valueIzq === valueDer;
             }
+            else if(this.tipo===tipoOp.AND){      
+                this.tipoDato = new Tipo(DataType.BOOLEAN);  
+                return valueIzq && valueDer;
+            }
+            else if(this.tipo===tipoOp.NOT){      
+                this.tipoDato = new Tipo(DataType.BOOLEAN);  
+                return !valueIzq;
+            }
         }  else {
             return null;
         }
     }  
 }
 
-export enum tipoOp{
+export enum tipoOp{//OPERADORES LOGICOS A TRABAJAR, AND-OR, NOT 
     AND,
     OR,
-    IGUAL,
-    DIFERENTE
+    NOT,
+    IGUAL
 }

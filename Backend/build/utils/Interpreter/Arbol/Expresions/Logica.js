@@ -47,6 +47,14 @@ class Logica extends Instruccion_1.Instruccion {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
                 return valueIzq === valueDer;
             }
+            else if (this.tipo === tipoOp.AND) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return valueIzq && valueDer;
+            }
+            else if (this.tipo === tipoOp.NOT) {
+                this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
+                return !valueIzq;
+            }
         }
         else {
             return null;
@@ -58,6 +66,6 @@ var tipoOp;
 (function (tipoOp) {
     tipoOp[tipoOp["AND"] = 0] = "AND";
     tipoOp[tipoOp["OR"] = 1] = "OR";
-    tipoOp[tipoOp["IGUAL"] = 2] = "IGUAL";
-    tipoOp[tipoOp["DIFERENTE"] = 3] = "DIFERENTE";
+    tipoOp[tipoOp["NOT"] = 2] = "NOT";
+    tipoOp[tipoOp["IGUAL"] = 3] = "IGUAL";
 })(tipoOp || (exports.tipoOp = tipoOp = {}));

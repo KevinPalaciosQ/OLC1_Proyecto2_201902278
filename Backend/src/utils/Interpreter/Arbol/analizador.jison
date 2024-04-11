@@ -121,7 +121,8 @@ const declaracion = require('./Instructions/Declaracion');
 %left MULTIPLICACION DIVISION MODULO
 %left POTENCIA
 %right not
-%left MAYOR
+%left MAYOR MENOR
+%left NEGACIONUNARIA 
 //INICIO
 %start INIT
 
@@ -156,22 +157,34 @@ TIPODECLARACION: R_INT
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
 DECLARACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
 ;
-EXPRESION:EXPRESION MAS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
-        |EXPRESION MENOS EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
-        |EXPRESION DIVISION EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.DIVISION,$1,$3,@1.first_line,@1.first_column);}
-        |EXPRESION MULTIPLICACION EXPRESION {$$=new aritmetico.default(aritmetico.tipoOp.MULTIPLICACION,$1,$3,@1.first_line,@1.first_column);}
-        |ENTERO {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
-        |CADENA {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
-        |IDENTIFICADOR {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
-
+EXPRESION:EXPRESION MAS EXPRESION              {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MENOS EXPRESION             {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION DIVISION EXPRESION          {$$=new aritmetico.default(aritmetico.tipoOp.DIVISION,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MULTIPLICACION EXPRESION    {$$=new aritmetico.default(aritmetico.tipoOp.MULTIPLICACION,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MODULO EXPRESION            {$$=new aritmetico.default(aritmetico.tipoOp.MODULO,$1,$3,@1.first_line,@1.first_column);}
+        |POTENCIA PARABRE EXPRESION COMA EXPRESION PARCIERRA  {$$=new aritmetico.default(aritmetico.tipoOp.POTENCIA,$3,$5,@1.first_line,@1.first_column);}
+        //|MENOS EXPRESION %NEGACIONUNARIA     {$$=new aritmetico.default(aritmetico.tipoOp.NEGACIONUNARIA,$2,null,@1.first_line,@1.first_column);}   
+        |ENTERO                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
+        |CADENA                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
+        |DECIMAL                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.DECIMAL),$1,@1.first_line,@1.first_column);}
+        |CARACTER                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR                         {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
+        |PARABRE EXPRESION PARCIERRA           {$$=$2;}
         //|EXPRESION PARABRE EXPRESION PARCIERRA {$$=$1;}-----------------expresion (expresion);
         //double
         //char -caracter
         //id
 ;
-EXPRESIONRELACIONAL: EXPRESION MAYOR EXPRESION {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
+EXPRESIONRELACIONAL: EXPRESION MAYOR EXPRESION  {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MAYORIGUAL EXPRESION {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MENOR EXPRESION      {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MENORIGUAL EXPRESION {$$=new relacional.default(relacional.tipoOp.MENOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION IGUALDAD EXPRESION    {$$=new relacional.default(relacional.tipoOp.IGUALACION,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION DIFERENTE EXPRESION   {$$=new relacional.default(relacional.tipoOp.DIFERENCIACION,$1,$3,@1.first_line,@1.first_column);}
 ;
 EXPRESIONLOGICA: EXPRESIONRELACIONAL OR EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESIONRELACIONAL AND EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESIONRELACIONAL NOT EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.NOT,$1,$3,@1.first_line,@1.first_column);}
 ;
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
 ;
@@ -225,8 +238,8 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
-        //|COUT MENOR MENOR EXPRESIONRELACIONAL  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
-        |COUT MENOR MENOR EXPRESIONLOGICA  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
+        |COUT MENOR MENOR EXPRESIONRELACIONAL  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
+        //|COUT MENOR MENOR EXPRESIONLOGICA  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
         |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

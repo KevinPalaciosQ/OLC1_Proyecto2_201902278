@@ -26,29 +26,35 @@ export default class Relacional extends Instruccion {
         if(this.tipo===tipoOp.MAYOR){        
             this.tipoDato = new Tipo(DataType.BOOLEAN);
             return valueIzq > valueDer;
-        }
+        }else if (this.tipo===tipoOp.MAYOR_IGUAL){
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            return valueIzq >= valueDer;
+        }else if (this.tipo===tipoOp.MENOR){
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            return valueIzq < valueDer;
+        }else if (this.tipo===tipoOp.MENOR_IGUAL){
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            return valueIzq <= valueDer;
+        }else if (this.tipo===tipoOp.IGUALACION){
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            return valueIzq === valueDer;
+        }else if (this.tipo===tipoOp.DIFERENCIACION){
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            return valueIzq !== valueDer;
+        }    
     }  else {
         return null;
     }
 }  
 }
 
-export enum tipoOp{
-MAYOR,
-MENOR,
-MAYOR_IGUAL,
-MENOR_IGUAL
+export enum tipoOp{//LAS OPERACIONES RELACIONALES TRABAJAN; >, >=, <,<=, ==, !=
+MAYOR, //>
+MAYOR_IGUAL, //>=
+MENOR, //<
+MENOR_IGUAL, //<=
+IGUALACION, //==
+DIFERENCIACION //.!=
 }
 
 
-///respaldo
-/* 
-     interpretar(arbol:Arbol,tabla:tablaSimbolo){
-        let valueIzq = this.operacionIzq.interpretar(arbol,tabla);
-        let valueDer = this.operacionDer.interpretar(arbol,tabla);
-        if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN
-        && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN){
-
-
-        }
-        */

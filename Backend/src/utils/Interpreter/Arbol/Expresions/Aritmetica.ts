@@ -8,14 +8,13 @@ export default class Aritmetico extends Instruccion {
     operacionDer: Instruccion;
     tipo: tipoOp;
     
-  
     constructor(tipo: tipoOp, opIzq: Instruccion, opDer: Instruccion, fila: number, columna: number) {
       super(new Tipo(DataType.INDEFINIDO), fila, columna);
       this.tipo = tipo;
       this.operacionIzq = opIzq;
       this.operacionDer = opDer;
     }
-  
+
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
           if(this.tipo===tipoOp.SUMA){
               let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
@@ -38,16 +37,57 @@ export default class Aritmetico extends Instruccion {
                       return (Number(valueIzq)-Number(valueDer));
                   }
               }
-          } 
-          return null;
+          }else if (this.tipo===tipoOp.MULTIPLICACION){
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
+                    this.tipoDato.setTipo(DataType.ENTERO);
+                    return (Number(valueIzq)*Number(valueDer));
+                }
+            }
+          } else if (this.tipo===tipoOp.DIVISION){
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
+                    this.tipoDato.setTipo(DataType.ENTERO);
+                    return (Number(valueIzq)/Number(valueDer));
+                }
+            }
+          } else if (this.tipo===tipoOp.POTENCIA){
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
+                    this.tipoDato.setTipo(DataType.ENTERO);
+                    return (Math.pow(Number(valueIzq),Number(valueDer)));
+                }
+            }
+          }else if (this.tipo===tipoOp.MODULO){
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
+                    this.tipoDato.setTipo(DataType.ENTERO);
+                    return (Number(valueIzq)%Number(valueDer));
+                }
+            }
+          }else if (this.tipo===tipoOp.NEGACIONUNARIA){
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return -Number(valueIzq);
+            }return null;
+          }
     }
-  }
-  
-  export enum tipoOp{
+}
+    export enum tipoOp{
       SUMA,
       RESTA,
       DIVISION,
       MULTIPLICACION,
       POTENCIA,
-      MODULO
-  }
+      MODULO,
+      NEGACIONUNARIA
+    }

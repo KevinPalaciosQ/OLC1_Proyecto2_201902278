@@ -12,10 +12,11 @@ export default class Type{
 }
   
 export enum DataType {
-    ENTERO,
-    DECIMAL,
-    CADENA,
-    BOOLEAN,
-    IDENTIFICADOR,
+    ENTERO,   //1                 YA
+    DECIMAL,// 2 Double           YA
+    CADENA, //5                   YA
+    CARACTER, //4
+    BOOLEAN,//3                   YA
+    IDENTIFICADOR,//              YA
     INDEFINIDO
 }

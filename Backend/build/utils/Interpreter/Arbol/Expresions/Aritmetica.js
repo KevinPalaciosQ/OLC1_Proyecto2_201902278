@@ -58,7 +58,54 @@ class Aritmetico extends Instruccion_1.Instruccion {
                 }
             }
         }
-        return null;
+        else if (this.tipo === tipoOp.MULTIPLICACION) {
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                    return (Number(valueIzq) * Number(valueDer));
+                }
+            }
+        }
+        else if (this.tipo === tipoOp.DIVISION) {
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                    return (Number(valueIzq) / Number(valueDer));
+                }
+            }
+        }
+        else if (this.tipo === tipoOp.POTENCIA) {
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                    return (Math.pow(Number(valueIzq), Number(valueDer)));
+                }
+            }
+        }
+        else if (this.tipo === tipoOp.MODULO) {
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                    return (Number(valueIzq) % Number(valueDer));
+                }
+            }
+        }
+        else if (this.tipo === tipoOp.NEGACIONUNARIA) {
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return -Number(valueIzq);
+            }
+            return null;
+        }
     }
 }
 exports.default = Aritmetico;
@@ -70,4 +117,5 @@ var tipoOp;
     tipoOp[tipoOp["MULTIPLICACION"] = 3] = "MULTIPLICACION";
     tipoOp[tipoOp["POTENCIA"] = 4] = "POTENCIA";
     tipoOp[tipoOp["MODULO"] = 5] = "MODULO";
+    tipoOp[tipoOp["NEGACIONUNARIA"] = 6] = "NEGACIONUNARIA";
 })(tipoOp || (exports.tipoOp = tipoOp = {}));
