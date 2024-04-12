@@ -48,6 +48,20 @@ class Nativo extends Instruccion_1.Instruccion {
             console.log(value);
             return (0, get_1.default)(value, 'valor');
         }
+        else if (this.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+            return parseFloat(this.valor);
+        }
+        else if (this.tipoDato.getTipo() === Type_1.DataType.BOOLEAN) {
+            if (this.valor === "true") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (this.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+            return this.valor.valor.toString();
+        }
     }
 }
 exports.default = Nativo;

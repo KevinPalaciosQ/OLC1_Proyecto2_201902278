@@ -41,27 +41,45 @@ class Relacional extends Instruccion_1.Instruccion {
             && validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
             if (this.tipo === tipoOp.MAYOR) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq > valueDer;
+                if (valueIzq > valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.MAYOR_IGUAL) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq >= valueDer;
+                if (valueIzq >= valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.MENOR) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq < valueDer;
+                if (valueIzq < valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.MENOR_IGUAL) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq <= valueDer;
+                if (valueIzq <= valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.IGUALACION) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq === valueDer;
+                if (valueIzq === valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.DIFERENCIACION) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq !== valueDer;
+                if (valueIzq !== valueDer) {
+                    return true;
+                }
+                return false;
             }
         }
         else {

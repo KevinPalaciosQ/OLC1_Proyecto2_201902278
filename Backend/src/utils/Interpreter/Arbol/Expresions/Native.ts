@@ -22,7 +22,18 @@ export default class Nativo extends Instruccion {
         this.tipoDato = get(value,"tipo",new Type(DataType.INDEFINIDO));//CASTEANDO A ENTERO 
         console.log(value);
         return get(value, 'valor');
-      } 
+      }else if(this.tipoDato.getTipo() === DataType.DECIMAL){
+        return parseFloat(this.valor);
+      }else if (this.tipoDato.getTipo() === DataType.BOOLEAN){
+        if (this.valor === "true"){
+          return true;
+        }else{
+          return false;
+        }
+
+      }else if (this.tipoDato.getTipo() === DataType.CARACTER){
+        return this.valor.valor.toString();
+      }
     }
   } 
   //double a valor 

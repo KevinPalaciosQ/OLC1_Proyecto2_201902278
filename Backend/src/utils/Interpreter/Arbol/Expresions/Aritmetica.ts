@@ -19,9 +19,9 @@ export default class Aritmetico extends Instruccion {
           if(this.tipo===tipoOp.SUMA){
               let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
               let valueDer = this.operacionDer.interpretar(arbol, tabla);
-              if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
-                  if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
-                      this.tipoDato.setTipo(DataType.ENTERO);
+              if(this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL){
+                  if(this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL){
+                      this.tipoDato.setTipo(DataType.DECIMAL);
                       return (Number(valueIzq)+Number(valueDer));
                   }else if(this.operacionDer.tipoDato.getTipo() === DataType.CADENA){
                       this.tipoDato.setTipo(DataType.CADENA);
@@ -46,7 +46,7 @@ export default class Aritmetico extends Instruccion {
                     return (Number(valueIzq)*Number(valueDer));
                 }
             }
-          } else if (this.tipo===tipoOp.DIVISION){
+          } else if (this.tipo===tipoOp.DIVISION){//validar que el hijo derecho sea diferente de 0, retornar no se puede dividir entre 0
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
             if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
@@ -64,22 +64,29 @@ export default class Aritmetico extends Instruccion {
                     return (Math.pow(Number(valueIzq),Number(valueDer)));
                 }
             }
-          }else if (this.tipo===tipoOp.MODULO){
+          }else if (this.tipo === tipoOp.MODULO) {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
-                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
-                    this.tipoDato.setTipo(DataType.ENTERO);
-                    return (Number(valueIzq)%Number(valueDer));
+            //console.log("modulo")
+            if (valueDer !== 0) { // Validar que el divisor sea diferente de 0
+                if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO &&
+                    this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                    // Si ambos operandos son enteros
+                    this.tipoDato.setTipo(DataType.DECIMAL); // Establecer el tipo de dato del resultado como double
+                    return (valueIzq % valueDer).toFixed(2); // Realizar el cálculo del módulo y devolver como double
+                } else {
+                    // Si al menos uno de los operandos es double
+                    this.tipoDato.setTipo(DataType.DECIMAL); // Establecer el tipo de dato del resultado como double
+                    return (valueIzq % valueDer).toFixed(2); // Realizar el cálculo del módulo y devolver como double
                 }
-            }
-          }else if (this.tipo===tipoOp.NEGACIONUNARIA){
-            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
-            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
+            }    
+            }else if (this.tipo===tipoOp.NEGACIONUNARIA){
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
                 this.tipoDato.setTipo(DataType.ENTERO);
-                return -Number(valueIzq);
-            }return null;
-          }
+                return -Number(valueDer);
+            }
+          }return null;
     }
 }
     export enum tipoOp{

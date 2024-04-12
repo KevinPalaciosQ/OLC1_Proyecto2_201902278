@@ -25,22 +25,36 @@ export default class Relacional extends Instruccion {
         && validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
         if(this.tipo===tipoOp.MAYOR){        
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq > valueDer;
+            if (valueIzq > valueDer){
+                return true;
+            }
+            return false
         }else if (this.tipo===tipoOp.MAYOR_IGUAL){
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq >= valueDer;
+            if (valueIzq >= valueDer){
+                return true;
+            }return false
         }else if (this.tipo===tipoOp.MENOR){
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq < valueDer;
+            if (valueIzq < valueDer){
+                return true;
+            }return false
         }else if (this.tipo===tipoOp.MENOR_IGUAL){
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq <= valueDer;
+            if (valueIzq <= valueDer){
+                return true;
+            }return false
         }else if (this.tipo===tipoOp.IGUALACION){
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq === valueDer;
+            if (valueIzq === valueDer){
+                return true;
+            }
+            return false 
         }else if (this.tipo===tipoOp.DIFERENCIACION){
             this.tipoDato = new Tipo(DataType.BOOLEAN);
-            return valueIzq !== valueDer;
+            if (valueIzq !== valueDer){
+                return true;
+            }return false
         }    
     }  else {
         return null;

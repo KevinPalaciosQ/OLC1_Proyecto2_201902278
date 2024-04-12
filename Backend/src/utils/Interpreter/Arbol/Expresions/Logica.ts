@@ -24,20 +24,28 @@ export default class Logica extends Instruccion {
         if(validTypesOperations.includes(this.operacionIzq.tipoDato.getTipo())
             && validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
             if(this.tipo===tipoOp.OR){      
-                this.tipoDato = new Tipo(DataType.BOOLEAN);  
-                return valueIzq || valueDer;
+                this.tipoDato = new Tipo(DataType.BOOLEAN);
+                if (valueIzq || valueDer){
+                    return true;
+                }return false
             }
             else if(this.tipo===tipoOp.IGUAL){      
+                console.log(valueIzq,"",valueDer)
                 this.tipoDato = new Tipo(DataType.BOOLEAN);  
-                return valueIzq === valueDer;
-            }
+                if (valueIzq === valueDer){
+                    console.log(DataType.BOOLEAN)
+                    return true;
+            }return false
+        }
             else if(this.tipo===tipoOp.AND){      
                 this.tipoDato = new Tipo(DataType.BOOLEAN);  
-                return valueIzq && valueDer;
-            }
-            else if(this.tipo===tipoOp.NOT){      
-                this.tipoDato = new Tipo(DataType.BOOLEAN);  
-                return !valueIzq;
+                if (valueIzq && valueDer){
+                    return true;
+            }return false
+        }else if (this.tipo === tipoOp.NOT) {      
+            this.tipoDato = new Tipo(DataType.BOOLEAN);
+            console.log(valueDer);
+            return !valueDer; // Negar el valor de valueDer
             }
         }  else {
             return null;

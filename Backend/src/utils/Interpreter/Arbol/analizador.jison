@@ -8,6 +8,7 @@ const relacional = require('./Expresions/Relacional');
 const logica = require('./Expresions/Logica');
 const Tipo = require("./Symbol/Type");
 const impresioncout = require('./Instructions/Cout');   
+const ifIns = require('./Instructions/Instruccionif');
 const declaracion = require('./Instructions/Declaracion');
 
 
@@ -32,11 +33,13 @@ const declaracion = require('./Instructions/Declaracion');
 //>>>>>>>>>>>>>>>>>>>>>>>>>>TIPOS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "int"                  return "R_INT";
 "double"               return "R_DOUBLE";
-("true"|"false")\b      return 'bool';
+"true"                 return  "R_TRUE"
+"false"                return  "R_FALSE"
 "char"                 return "R_CHAR";
 "std::string"          return "R_CADENA";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>SIMBOLOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ","                    return "COMA"; 
+"=="                    return "IGUALDAD";
 "="                    return "IGUAL";
 ";"                    return "PUNTOYCOMA";
 ":"                    return "DOSPUNTOS";
@@ -49,8 +52,8 @@ const declaracion = require('./Instructions/Declaracion');
 "]"                    return "CORCHETEABRE";
 "new"                  return "NEW";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>PALABRAS RESERVADAS<<<<<<<<<<<<<<<<<<<<<<<<<<
-"if"                    return "IF";
-"else"                  return "ELSE";
+"if"                    return "RESERVADAIF";
+"else"                  return "RESERVADAELSE";
 "switch"                return "SWITCH";
 "case"                  return "CASE";
 "default"               return "DEFAULT";
@@ -81,12 +84,13 @@ const declaracion = require('./Instructions/Declaracion');
 "pow"                   return "POTENCIA";
 "%"                     return "MODULO";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>OPERADORES RELACIONALES<<<<<<<<<<<<<<<<<<<<<<<<<<
-"=="                    return "IGUALDAD";
+
 "!="                    return "DIFERENTE";
-"<"                     return "MENOR";
 "<="                    return "MENORIGUAL";
-">"                     return "MAYOR";
+"<"                     return "MENOR";
 ">="                    return "MAYORIGUAL";
+">"                     return "MAYOR";
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>OPERADOR TERNARIO<<<<<<<<<<<<<<<<<<<<<<<<<<
 "||"                    return "OR";
 "&&"                    return "AND";
@@ -96,11 +100,11 @@ const declaracion = require('./Instructions/Declaracion');
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>INCREMENTO/DECREMENTO<<<<<<<<<<<<<<<<<<<<<<<<<<
-"++"                    return "INCREMENTO";
-"--"                    return "DECREMENTO";
+"++"                        return "INCREMENTO";
+"--"                        return "DECREMENTO";
 [A-Za-z]+["_"0-9A-Za-z]*    return 'IDENTIFICADOR';
+[0-9]+"."[0-9]+             return 'DECIMAL';
 [0-9]+                      return 'ENTERO';
-[0-9]+"."[0-9]+             return 'DECIMAL';  
 \'([^']|"\\n"|"\\r"|"\\t")*\'    {
                         //Quitamos las comillas simples
                        yytext=yytext.slice(1, -1);
@@ -114,15 +118,18 @@ const declaracion = require('./Instructions/Declaracion');
 .                           return 'INVALID'
 /lex
 //PRESEDENCIA
-%left INTERROGACION
+//%left INTERROGACION
 %left OR
-%left AND
+%left AND 
+%left DIFERENTE 
+%right NOT
+
+%left IGUALDAD 
+%left MENORIGUAL MAYORIGUAL MAYOR MENOR
 %left MAS MENOS
-%left MULTIPLICACION DIVISION MODULO
+%left DIVISION MULTIPLICACION MODULO
 %left POTENCIA
-%right not
-%left MAYOR MENOR
-%left NEGACIONUNARIA 
+%right NEGACIONUNARIA 
 //INICIO
 %start INIT
 
@@ -133,16 +140,20 @@ INIT: INSTRUCCIONES EOF {return $1;}
 
 INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
             |INSTRUCCION                     {$$=[$1];}
+            
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA {$$=$1}
-        |FUNCIONCOUT {$$=$1;}
-        |INVALID          {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
-        |error PUNTOYCOMA {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
+        |FUNCIONCOUT       {$$=$1;}
+        |IFSIMPLE          {$$=$1;}
+        |INVALID           {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
+        |error PUNTOYCOMA  {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
         |SENTENCIASCONTROL
-        |OPERADORESRELACIONALES
-        |DECLARACIONN {$$=$1;}
+        |DECLARACIONN      {$$=$1;}
 ;
+IFSIMPLE: RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA {$$=new ifIns.default($3,$6, undefined, undefined, @1.first_line, @1.first_column);}
+;
+
 
 DECLARACION : TIPODECLARACION IDENTIFICADOR IGUAL EXPRESION
         |TIPODECLARACION IDENTIFICADOR
@@ -163,34 +174,48 @@ EXPRESION:EXPRESION MAS EXPRESION              {$$=new aritmetico.default(aritme
         |EXPRESION MULTIPLICACION EXPRESION    {$$=new aritmetico.default(aritmetico.tipoOp.MULTIPLICACION,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MODULO EXPRESION            {$$=new aritmetico.default(aritmetico.tipoOp.MODULO,$1,$3,@1.first_line,@1.first_column);}
         |POTENCIA PARABRE EXPRESION COMA EXPRESION PARCIERRA  {$$=new aritmetico.default(aritmetico.tipoOp.POTENCIA,$3,$5,@1.first_line,@1.first_column);}
-        //|MENOS EXPRESION %NEGACIONUNARIA     {$$=new aritmetico.default(aritmetico.tipoOp.NEGACIONUNARIA,$2,null,@1.first_line,@1.first_column);}   
+        |MENOS EXPRESION %prec NEGACIONUNARIA  {$$=new aritmetico.default(aritmetico.tipoOp.NEGACIONUNARIA,$2,$2,@1.first_line,@1.first_column);}   
         |ENTERO                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
         |CADENA                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
         |DECIMAL                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.DECIMAL),$1,@1.first_line,@1.first_column);}
         |CARACTER                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR                         {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
         |PARABRE EXPRESION PARCIERRA           {$$=$2;}
+        |R_TRUE                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
+        |R_FALSE                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
+        |EXPRECIONRELACIONALYLOGICA            {$$=$1;}
+        |EXPRESION MAYOR EXPRESION             {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MAYORIGUAL EXPRESION              {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MENOR EXPRESION                   {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION MENORIGUAL EXPRESION              {$$=new relacional.default(relacional.tipoOp.MENOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION IGUALDAD EXPRESION                {$$=new relacional.default(relacional.tipoOp.IGUALACION,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION DIFERENTE EXPRESION               {$$=new relacional.default(relacional.tipoOp.DIFERENCIACION,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION  OR EXPRESION                     {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
+        |EXPRESION  AND EXPRESION                    {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
+        |NOT EXPRESION                               {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
         //|EXPRESION PARABRE EXPRESION PARCIERRA {$$=$1;}-----------------expresion (expresion);
         //double
-        //char -caracter
+        //char -caracter|
         //id
 ;
-EXPRESIONRELACIONAL: EXPRESION MAYOR EXPRESION  {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESION MAYORIGUAL EXPRESION {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESION MENOR EXPRESION      {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESION MENORIGUAL EXPRESION {$$=new relacional.default(relacional.tipoOp.MENOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESION IGUALDAD EXPRESION    {$$=new relacional.default(relacional.tipoOp.IGUALACION,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESION DIFERENTE EXPRESION   {$$=new relacional.default(relacional.tipoOp.DIFERENCIACION,$1,$3,@1.first_line,@1.first_column);}
+
+/*
+EXPRECIONRELACIONALYLOGICA : EXPRESION MAYOR EXPRESION       {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MAYORIGUAL EXPRESION              {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MENOR EXPRESION                   {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION MENORIGUAL EXPRESION              {$$=new relacional.default(relacional.tipoOp.MENOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION IGUALDAD EXPRESION                {$$=new relacional.default(relacional.tipoOp.IGUALACION,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION DIFERENTE EXPRESION               {$$=new relacional.default(relacional.tipoOp.DIFERENCIACION,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION  OR EXPRESION                     {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
+                |EXPRESION  AND EXPRESION                    {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
+                |NOT EXPRESION                               {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
 ;
-EXPRESIONLOGICA: EXPRESIONRELACIONAL OR EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESIONRELACIONAL AND EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
-                |EXPRESIONRELACIONAL NOT EXPRESIONRELACIONAL {$$=new logica.default(logica.tipoOp.NOT,$1,$3,@1.first_line,@1.first_column);}
-;
+*/
+
 SENTENCIASCONTROL: IF CORCHETEABRE CORCHETECIERRA
 ;
 
-OPERADORESRELACIONALES: EXPRESION IGUALDAD EXPRESION
-;
+
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 CASTEOS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -238,10 +263,9 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
-        |COUT MENOR MENOR EXPRESIONRELACIONAL  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
-        //|COUT MENOR MENOR EXPRESIONLOGICA  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}
-        |COUT MENOR MENOR EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
+        |COUT MENOR MENOR  EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
 ;

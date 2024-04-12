@@ -41,19 +41,31 @@ class Logica extends Instruccion_1.Instruccion {
             && validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
             if (this.tipo === tipoOp.OR) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq || valueDer;
+                if (valueIzq || valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.IGUAL) {
+                console.log(valueIzq, "", valueDer);
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq === valueDer;
+                if (valueIzq === valueDer) {
+                    console.log(Type_1.DataType.BOOLEAN);
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.AND) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return valueIzq && valueDer;
+                if (valueIzq && valueDer) {
+                    return true;
+                }
+                return false;
             }
             else if (this.tipo === tipoOp.NOT) {
                 this.tipoDato = new Type_1.default(Type_1.DataType.BOOLEAN);
-                return !valueIzq;
+                console.log(valueDer);
+                return !valueDer; // Negar el valor de valueDer
             }
         }
         else {
