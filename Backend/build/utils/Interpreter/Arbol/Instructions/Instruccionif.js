@@ -40,11 +40,31 @@ class If extends Instruccion_1.Instruccion {
     interpretar(arbol, tabla) {
         const condition = this.operacionIf.interpretar(arbol, tabla);
         if ((condition)) {
+            console.log(this.listaInstrucciones);
             const tablaLocal = new SymbolTable_1.default(tabla);
             for (let i of this.listaInstrucciones) {
                 i.interpretar(arbol, tablaLocal);
             }
             return true;
+        }
+        else { //revisando los else if
+            if (this.listaElseIf) {
+                console.log(this.listaElseIf);
+                for (let i of this.listaElseIf) {
+                    const operation = i.interpretar(arbol, tabla);
+                    if (operation) {
+                        return false;
+                    }
+                }
+            }
+            if (this.listaInsElse) { //si existe un else se crea un nuevo entorno 
+                console.log(this.listaInsElse);
+                const tablaLocal = new SymbolTable_1.default(tabla);
+                for (let i of this.listaInsElse) {
+                    i.interpretar(arbol, tablaLocal);
+                }
+                return false;
+            }
         }
     }
 }
