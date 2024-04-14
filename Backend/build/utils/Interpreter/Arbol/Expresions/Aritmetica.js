@@ -82,9 +82,21 @@ class Aritmetico extends Instruccion_1.Instruccion {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
             if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                    return (Math.pow(Number(valueIzq), Number(valueDer)));
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL); // Entero y decimal resulta en decimal
+                    return Math.pow(Number(valueIzq), Number(valueDer)).toFixed(2);
+                    ; // Realizamos la potencia
+                }
+                else if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.ENTERO); // Entero y entero resulta en entero
+                    return Math.pow(Number(valueIzq), Number(valueDer)); // Realizamos la potencia
+                }
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL || this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL); // Decimal y decimal o entero resulta en decimal
+                    return Math.pow(Number(valueIzq), Number(valueDer)).toFixed(2);
+                    ; // Realizamos la potencia
                 }
             }
         }

@@ -27,18 +27,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
-const Symbol_1 = __importDefault(require("../Symbol/Symbol"));
 const Type_1 = __importStar(require("../Symbol/Type"));
-class Asignacion extends Instruccion_1.Instruccion {
-    constructor(id, valor, linea, columna) {
+const SymbolTable_1 = __importDefault(require("../Symbol/SymbolTable"));
+const cloneDeep_1 = __importDefault(require("lodash/cloneDeep")); //copia datos y asigna a nuevas variables
+class Mientras extends Instruccion_1.Instruccion {
+    constructor(operacion, listaInstrucciones, linea, columna) {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
-        this.id = id;
-        this.valor = valor;
+        this.operacion = operacion;
+        this.listaInstrucciones = listaInstrucciones;
     }
     interpretar(arbol, tabla) {
-        const valorToAsign = this.valor.interpretar(arbol, tabla);
-        tabla.setValor(this.id, new Symbol_1.default(this.valor.tipoDato, this.id, valorToAsign), false); //en lugar de setear un campo lo asigna
+        const tablaLocal = new SymbolTable_1.default(tabla);
+        while ((0, cloneDeep_1.default)(this.operacion).interpretar(arbol, tablaLocal)) {
+            const instructionsToExec = (0, cloneDeep_1.default)(this.listaInstrucciones);
+            for (let i of instructionsToExec) {
+                i.interpretar(arbol, tablaLocal);
+            }
+        }
         return null;
     }
 }
-exports.default = Asignacion;
+exports.default = Mientras;

@@ -11,6 +11,7 @@ const impresioncout = require('./Instructions/Cout');
 const ifIns = require('./Instructions/Instruccionif');
 const declaracion = require('./Instructions/Declaracion');
 const asignacionv = require('./Instructions/Asignacion');
+const whileIns = require('./Instructions/Mientras');
 
 %}
 
@@ -58,7 +59,7 @@ const asignacionv = require('./Instructions/Asignacion');
 "switch"                return "SWITCH";
 "case"                  return "CASE";
 "default"               return "DEFAULT";
-"while"                 return "WHILE";
+"while"                 return "RESERVADAWHILE";
 "for"                   return "FOR";
 "do"                    return "DO";
 "break"                 return "BREAK";
@@ -144,23 +145,26 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
-        //|DECLARACIONN PUNTOYCOMA          {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
+        |WHILEINS                       {$$=$1;}
+        //|ASIGNACION                     {$$=$1;}
         |IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
         |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
-        |DECLARACIONN                   {$$=$1;}
 ;
 
-ENCAPSULAMIENTO: LLAVEABRE INSTRUCCIONES LLAVECIERRA    {$$=$2;}
-        |LLAVEABRE LLAVECIERRA                          {$$=[];}
-
+ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 ;
+//para lista de asignaciones hacer la misma logica de instrucciones
+WHILEINS: RESERVADAWHILE PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA
+        {$$=new whileIns.default($3,$6,@1.first_line,@1.first_column);}
+;
+
 IFINS: SIMPLEIF {$$=$1;}
         //RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA 
         //{$$=new ifIns.default($3,$6, undefined, undefined, @1.first_line, @1.first_column);}
-        |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO ELSEIFINS ENCAPSULAMIENTO
-        {$$=new ifIns.default($3,$5,null,$7,@1.first_line,@1.first_column);}//hacer una produccion donde no se acepte el else
+        |RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA ELSEIFINS RESELSE LLAVEABRE INSTRUCCIONES LLAVECIERRA
+        {$$=new ifIns.default($3,$6,$8,$11,@1.first_line,@1.first_column);}//hacer una produccion donde no se acepte el else
 ;
 SIMPLEIF:
         RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA 
@@ -236,6 +240,9 @@ TDD: R_INT         {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO)
 //---->corregir asignacion
 //ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 //;
+//------------------------asignacion de prueba
+
+
 EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MENOS EXPRESION                            {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION DIVISION EXPRESION                         {$$=new aritmetico.default(aritmetico.tipoOp.DIVISION,$1,$3,@1.first_line,@1.first_column);}
@@ -251,7 +258,7 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |PARABRE EXPRESION PARCIERRA                          {$$=$2;}
         |R_TRUE                                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |R_FALSE                                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
-        |EXPRECIONRELACIONALYLOGICA                           {$$=$1;}
+        //|EXPRECIONRELACIONALYLOGICA                         {$$=$1;}
         |EXPRESION MAYOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MAYORIGUAL EXPRESION                       {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MENOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}

@@ -55,13 +55,21 @@ export default class Aritmetico extends Instruccion {
                     return (Number(valueIzq)/Number(valueDer));
                 }
             }
-          } else if (this.tipo===tipoOp.POTENCIA){
+          }else if (this.tipo === tipoOp.POTENCIA) {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if(this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO){
-                if(this.operacionDer.tipoDato.getTipo() === DataType.ENTERO){
-                    this.tipoDato.setTipo(DataType.ENTERO);
-                    return (Math.pow(Number(valueIzq),Number(valueDer)));
+            if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO) {
+                if (this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                    this.tipoDato.setTipo(DataType.DECIMAL); // Entero y decimal resulta en decimal
+                    return Math.pow(Number(valueIzq), Number(valueDer)).toFixed(2);; // Realizamos la potencia
+                } else if (this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                    this.tipoDato.setTipo(DataType.ENTERO); // Entero y entero resulta en entero
+                    return Math.pow(Number(valueIzq), Number(valueDer)); // Realizamos la potencia
+                }
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL) {
+                if (this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL || this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                    this.tipoDato.setTipo(DataType.DECIMAL); // Decimal y decimal o entero resulta en decimal
+                    return Math.pow(Number(valueIzq), Number(valueDer)).toFixed(2);; // Realizamos la potencia
                 }
             }
           }else if (this.tipo === tipoOp.MODULO) {

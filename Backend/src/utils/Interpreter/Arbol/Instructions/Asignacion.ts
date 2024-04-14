@@ -16,7 +16,7 @@ export default class Asignacion extends Instruccion {
 
     public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
         const valorToAsign = this.valor.interpretar(arbol, tabla);
-        tabla.setValor(this.id, new Simbolo(this.valor.tipoDato, this.id, valorToAsign), false);
+        tabla.setValor(this.id, new Simbolo(this.valor.tipoDato, this.id, valorToAsign), false);//en lugar de setear un campo lo asigna
         return null;
     }
 }
