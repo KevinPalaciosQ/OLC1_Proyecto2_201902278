@@ -16,19 +16,82 @@ export default class Aritmetico extends Instruccion {
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-          if(this.tipo===tipoOp.SUMA){
-              let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
-              let valueDer = this.operacionDer.interpretar(arbol, tabla);
-              if(this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL){
-                  if(this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL){
-                      this.tipoDato.setTipo(DataType.DECIMAL);
-                      return (Number(valueIzq)+Number(valueDer));
-                  }else if(this.operacionDer.tipoDato.getTipo() === DataType.CADENA){
-                      this.tipoDato.setTipo(DataType.CADENA);
-                      return (`${valueIzq.toString()}${valueDer.toString()}`);
-                  }
-              }
-          }else if (this.tipo === tipoOp.RESTA) {    
+        if (this.tipo === tipoOp.SUMA) {    
+            let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
+            let valueDer = this.operacionDer.interpretar(arbol, tabla);
+            
+            if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return Number(valueIzq) + Number(valueDer);
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) + Number(valueDer)).toFixed(2);
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN) {
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return (Number(valueIzq) + (valueDer ? 1 : 0));
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) + (valueDer ? 1 : 0)).toFixed(2);
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.CARACTER) {
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return Number(valueIzq) +valueDer.charCodeAt(0);
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.CADENA) {
+                this.tipoDato.setTipo(DataType.CADENA);//aca estoy 
+                return Number(valueIzq).toString() + valueDer;
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) + Number(valueDer)).toFixed(2);
+            } else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) + Number(valueDer)).toFixed(2);
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.CARACTER) {//revisando aca
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) +valueDer.charCodeAt(0)).toFixed(2);
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.CADENA) {
+                this.tipoDato.setTipo(DataType.DECIMAL);//aca estoy 
+                return Number(valueIzq).toString() + valueDer;
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return (Number(valueIzq) + Number(valueDer));
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return (Number(valueIzq) + Number(valueDer)).toFixed(2);
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === DataType.CADENA) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq) + valueDer).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                this.tipoDato.setTipo(DataType.ENTERO);
+                return ((valueIzq).charCodeAt(0) + Number(valueDer));
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                this.tipoDato.setTipo(DataType.DECIMAL);
+                return ((valueIzq).charCodeAt(0) + Number(valueDer)).toFixed(2);
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === DataType.CARACTER) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === DataType.CADENA) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CADENA && this.operacionDer.tipoDato.getTipo() === DataType.CADENA) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CADENA && this.operacionDer.tipoDato.getTipo() === DataType.CARACTER) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CADENA && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CADENA && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+Number(valueDer).toFixed(2)).toString();
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CADENA && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN) {
+                this.tipoDato.setTipo(DataType.CADENA);
+                return ((valueIzq)+(valueDer)).toString();
+            }   else {
+                // Manejar otras combinaciones de tipos aquí si es necesario
+                return "error semantico";
+            }
+            //if resta
+        }else if (this.tipo === tipoOp.RESTA) {    
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
             
@@ -50,12 +113,12 @@ export default class Aritmetico extends Instruccion {
             }else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.CARACTER) {
                 this.tipoDato.setTipo(DataType.DECIMAL);
                 return (Number(valueIzq) - valueDer.charCodeAt(0)).toFixed(2);
-            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN) {//entero-boolean
                 this.tipoDato.setTipo(DataType.ENTERO);
                 return (Number(valueIzq) -  Number(valueDer));
-            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === DataType.DECIMAL) {
+            }else if (this.operacionIzq.tipoDato.getTipo() === DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === DataType.BOOLEAN) {//decimal-boolean
                 this.tipoDato.setTipo(DataType.DECIMAL);
-                return (Number(valueIzq) -  Number(valueDer)).toFixed(2);
+                return (Number(valueIzq) -  (valueDer ? 1 : 0)).toFixed(2);
             }else if (this.operacionIzq.tipoDato.getTipo() === DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === DataType.ENTERO) {
                 this.tipoDato.setTipo(DataType.ENTERO);
                 return (valueIzq.charCodeAt(0) -  Number(valueDer));
