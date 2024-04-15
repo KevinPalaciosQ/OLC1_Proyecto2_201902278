@@ -51,31 +51,137 @@ class Aritmetico extends Instruccion_1.Instruccion {
         else if (this.tipo === tipoOp.RESTA) {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                    return (Number(valueIzq) - Number(valueDer));
-                }
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return Number(valueIzq) - Number(valueDer);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) - Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) - Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) - Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return Number(valueIzq) - valueDer.charCodeAt(0);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) - valueDer.charCodeAt(0)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return (Number(valueIzq) - Number(valueDer));
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) - Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return (valueIzq.charCodeAt(0) - Number(valueDer));
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (valueIzq.charCodeAt(0) - Number(valueDer)).toFixed(2);
+            }
+            else {
+                // Manejar otras combinaciones de tipos aquí si es necesario
+                return NaN;
             }
         }
         else if (this.tipo === tipoOp.MULTIPLICACION) {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                    return (Number(valueIzq) * Number(valueDer));
-                }
+            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return Number(valueIzq) * Number(valueDer);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) * Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) * Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) * Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (valueIzq.charCodeAt(0) * Number(valueDer));
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (valueIzq.charCodeAt(0) * Number(valueDer)).toFixed(2);
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) { //validando aca
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
+                return (Number(valueIzq) * valueDer.charCodeAt(0));
+            }
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) { //validando aca
+                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                return (Number(valueIzq) * valueDer.charCodeAt(0)).toFixed(2);
+            }
+            else {
+                // Manejar otras combinaciones de tipos aquí si es necesario
+                return NaN;
             }
         }
-        else if (this.tipo === tipoOp.DIVISION) { //validar que el hijo derecho sea diferente de 0, retornar no se puede dividir entre 0
+        else if (this.tipo === tipoOp.DIVISION) {
             let valueIzq = this.operacionIzq.interpretar(arbol, tabla);
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                    this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                    return (Number(valueIzq) / Number(valueDer));
+            // Validar que el divisor sea diferente de cero
+            if (valueDer !== 0) {
+                if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / Number(valueDer)).toFixed(2);
                 }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / Number(valueDer)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / valueDer.charCodeAt(0)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / Number(valueDer)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / Number(valueDer)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    return (Number(valueIzq) / valueDer.charCodeAt(0)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    // Convertir el carácter a su valor ASCII y luego realizar la división
+                    return (valueIzq.charCodeAt(0) / Number(valueDer)).toFixed(2);
+                }
+                else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                    this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                    // Convertir el carácter a su valor ASCII y luego realizar la división
+                    return (valueIzq.charCodeAt(0) / Number(valueDer)).toFixed(2);
+                }
+                else {
+                    // Manejar otras combinaciones de tipos aquí si es necesario
+                    return NaN;
+                }
+            }
+            else {
+                return "No se puede dividir entre cero";
             }
         }
         else if (this.tipo === tipoOp.POTENCIA) {
@@ -119,13 +225,30 @@ class Aritmetico extends Instruccion_1.Instruccion {
             }
         }
         else if (this.tipo === tipoOp.NEGACIONUNARIA) {
+            const validTypesOperations = [Type_1.DataType.ENTERO, Type_1.DataType.DECIMAL];
             let valueDer = this.operacionDer.interpretar(arbol, tabla);
-            if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                return -Number(valueDer);
+            // Verificar si el valor es numérico
+            if (!isNaN(valueDer)) {
+                if (validTypesOperations.includes(this.operacionDer.tipoDato.getTipo())) {
+                    this.tipoDato.setTipo(this.operacionDer.tipoDato.getTipo());
+                    // Verificar si el operando es un decimal
+                    if (this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+                        return -valueDer.toFixed(2); // Devolver el valor negativo como decimal
+                    }
+                    else {
+                        return -valueDer; // Devolver el valor negativo como entero
+                    }
+                }
+                else {
+                    // Devolver NaN si el tipo de dato no es admitido
+                    return NaN;
+                }
+            }
+            else {
+                // Devolver NaN si el valor no es numérico
+                return NaN;
             }
         }
-        return null;
     }
 }
 exports.default = Aritmetico;

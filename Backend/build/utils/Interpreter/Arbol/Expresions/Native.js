@@ -49,6 +49,8 @@ class Nativo extends Instruccion_1.Instruccion {
             return (0, get_1.default)(value, 'valor');
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+            console.log(this.valor);
+            //return this.valor.toFixed(2);
             return parseFloat(this.valor);
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.BOOLEAN) {
@@ -60,7 +62,8 @@ class Nativo extends Instruccion_1.Instruccion {
             }
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.CARACTER) {
-            return this.valor.valor.toString();
+            //console.log("soy un caracter")
+            return this.valor.toString();
         }
     }
 }

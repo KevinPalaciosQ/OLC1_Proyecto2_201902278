@@ -23,7 +23,9 @@ export default class Nativo extends Instruccion {
         console.log(value);
         return get(value, 'valor');
       }else if(this.tipoDato.getTipo() === DataType.DECIMAL){
-        return parseFloat(this.valor);
+        console.log(this.valor);
+        //return this.valor.toFixed(2);
+        return parseFloat(this.valor); 
       }else if (this.tipoDato.getTipo() === DataType.BOOLEAN){
         if (this.valor === "true"){
           return true;
@@ -32,7 +34,8 @@ export default class Nativo extends Instruccion {
         }
 
       }else if (this.tipoDato.getTipo() === DataType.CARACTER){
-        return this.valor.valor.toString();
+        //console.log("soy un caracter")
+        return this.valor.toString();
       }
     }
   } 

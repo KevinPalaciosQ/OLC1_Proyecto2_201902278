@@ -12,7 +12,7 @@ const ifIns = require('./Instructions/Instruccionif');
 const declaracion = require('./Instructions/Declaracion');
 const asignacionv = require('./Instructions/Asignacion');
 const whileIns = require('./Instructions/Mientras');
-
+const incremento = require('./Expresions/Incremento');
 %}
 
 %lex
@@ -79,7 +79,9 @@ const whileIns = require('./Instructions/Mientras');
 "c_str"                 return "C_STR";
 "execute"               return "EXECUTE";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>EXPRESIONES NATIVAS<<<<<<<<<<<<<<<<<<<<<<<<<<
+"++"                    return "INCREMENTO";
 "+"                     return "MAS";
+"--"                    return "DECREMENTO";
 "-"                     return "MENOS";
 "*"                     return "MULTIPLICACION"; 
 "/"                     return "DIVISION";
@@ -102,17 +104,18 @@ const whileIns = require('./Instructions/Mientras');
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>INCREMENTO/DECREMENTO<<<<<<<<<<<<<<<<<<<<<<<<<<
-"++"                        return "INCREMENTO";
-"--"                        return "DECREMENTO";
+
+
 [A-Za-z]+["_"0-9A-Za-z]*    return 'IDENTIFICADOR';
 [0-9]+"."[0-9]+             return 'DECIMAL';
 [0-9]+                      return 'ENTERO';
-\'([^']|"\\n"|"\\r"|"\\t")*\'    {
+\'(([^\"\'\\\\]{0,1}|\\\'|\\\"|\\n|\\r|\\t|\\\\))\'                         { yytext=yytext.substr(1,yyleng-2); return 'CARACTER'; }
+/*\'([^']|"\\n"|"\\r"|"\\t")*\'    {
                         //Quitamos las comillas simples
                        yytext=yytext.slice(1, -1);
                        return 'CARACTER';
                     }                               
-
+*/
 \"[^\"]*\"                  { yytext=yytext.substr(1,yyleng-2); return 'CADENA'; }
 //>>>>>>>>>>>>>>>>>>>>>>>>>>CONTINUACION<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -147,12 +150,15 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         |FUNCIONCOUT                    {$$=$1;}
         |WHILEINS                       {$$=$1;}
+        |AUMENTO                        {$$=$1;}
         //|ASIGNACION                     {$$=$1;}
         |IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
         |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
 ;
-
+AUMENTO: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.default($1,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR DECREMENTO  PUNTOYCOMA                    {$$=new incremento.default(incremento.Operacion.DECREMENTO,$1,$2,@1.first_line,@1.first_column);}
+;
 ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 ;
 //para lista de asignaciones hacer la misma logica de instrucciones
@@ -258,7 +264,6 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |PARABRE EXPRESION PARCIERRA                          {$$=$2;}
         |R_TRUE                                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |R_FALSE                                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
-        //|EXPRECIONRELACIONALYLOGICA                         {$$=$1;}
         |EXPRESION MAYOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MAYORIGUAL EXPRESION                       {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MENOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MENOR,$1,$3,@1.first_line,@1.first_column);}
@@ -268,6 +273,7 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |EXPRESION  OR EXPRESION                              {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION  AND EXPRESION                             {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
         |NOT EXPRESION                                        {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
+
 ;
 /*
 EXPRECION_RELACIONAL : EXPRESION MAYOR EXPRESION       {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
