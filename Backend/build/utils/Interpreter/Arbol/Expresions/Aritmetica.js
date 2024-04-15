@@ -74,16 +74,16 @@ class Aritmetico extends Instruccion_1.Instruccion {
                 return (Number(valueIzq) + valueDer.charCodeAt(0)).toFixed(2);
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CADENA) {
-                this.tipoDato.setTipo(Type_1.DataType.DECIMAL); //aca estoy 
+                this.tipoDato.setTipo(Type_1.DataType.CADENA); //aca estoy 
                 return Number(valueIzq).toString() + valueDer;
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
                 this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                return (Number(valueIzq) + Number(valueDer));
+                return ((valueIzq ? 1 : 0) + Number(valueDer));
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
                 this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
-                return (Number(valueIzq) + Number(valueDer)).toFixed(2);
+                return ((valueIzq ? 1 : 0) + Number(valueDer)).toFixed(2);
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CADENA) {
                 this.tipoDato.setTipo(Type_1.DataType.CADENA);
@@ -158,21 +158,21 @@ class Aritmetico extends Instruccion_1.Instruccion {
                 this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
                 return (Number(valueIzq) - valueDer.charCodeAt(0)).toFixed(2);
             }
-            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.BOOLEAN) { //entero-boolean
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) { //boolean-entero
                 this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                return (Number(valueIzq) - Number(valueDer));
+                return ((valueDer ? 1 : 0) - Number(valueDer));
             }
-            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.BOOLEAN) { //decimal-boolean
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.BOOLEAN && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) { //boolean-decimal
                 this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
-                return (Number(valueIzq) - (valueDer ? 1 : 0)).toFixed(2);
+                return ((valueDer ? 1 : 0) - Number(valueDer)).toFixed(2);
             }
-            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.ENTERO && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) { //entero-caracter
                 this.tipoDato.setTipo(Type_1.DataType.ENTERO);
-                return (valueIzq.charCodeAt(0) - Number(valueDer));
+                return (Number(valueIzq) - valueDer.charCodeAt(0));
             }
-            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
+            else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.DECIMAL && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.CARACTER) { //entero-double
                 this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
-                return (valueIzq.charCodeAt(0) - Number(valueDer)).toFixed(2);
+                return (Number(valueIzq) - valueDer.charCodeAt(0)).toFixed(2);
             }
             else {
                 // Manejar otras combinaciones de tipos aquí si es necesario
@@ -199,7 +199,7 @@ class Aritmetico extends Instruccion_1.Instruccion {
                 return (Number(valueIzq) * Number(valueDer)).toFixed(2);
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
-                this.tipoDato.setTipo(Type_1.DataType.DECIMAL);
+                this.tipoDato.setTipo(Type_1.DataType.ENTERO);
                 return (valueIzq.charCodeAt(0) * Number(valueDer));
             }
             else if (this.operacionIzq.tipoDato.getTipo() === Type_1.DataType.CARACTER && this.operacionDer.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {

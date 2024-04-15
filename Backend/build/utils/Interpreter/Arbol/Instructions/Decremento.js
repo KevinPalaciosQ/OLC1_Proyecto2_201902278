@@ -27,22 +27,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
-const Error_1 = __importDefault(require("../Exceptions/Error"));
+const Symbol_1 = __importDefault(require("../Symbol/Symbol"));
 const Type_1 = __importStar(require("../Symbol/Type"));
-class Cout extends Instruccion_1.Instruccion {
-    constructor(expresion, linea, columna, saltoextra) {
-        super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna); //Para compilar tipos de dato
-        this.expresion = expresion;
-        this.saltoextra = saltoextra;
+class Decremento extends Instruccion_1.Instruccion {
+    constructor(identificador, linea, columna) {
+        super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
+        this.identificador = identificador;
     }
     interpretar(arbol, tabla) {
-        let valor = this.expresion.interpretar(arbol, tabla); //Obtener el valor de la expresion al interpretarlo 
-        if (valor instanceof Error_1.default)
-            return valor;
-        if (this.saltoextra == "saltoextra") {
-            valor = valor + '\n';
+        let variable = tabla.getValor(this.identificador);
+        if (variable instanceof Symbol_1.default) {
+            let tipoVariable = variable.gettipo().getTipo();
+            if (tipoVariable === Type_1.DataType.ENTERO || tipoVariable === Type_1.DataType.DECIMAL) {
+                let valor = variable.getvalor();
+                valor--;
+                tabla.setValor(this.identificador, new Symbol_1.default(variable.gettipo(), variable.getidentificador(), valor));
+                return valor;
+            }
+            else {
+                return console.log("Error en Semantico: No se puede decrementar la variable " + this.identificador + " porque su valor no es numérico.");
+            }
         }
-        arbol.actualizaConsola(valor + '');
     }
 }
-exports.default = Cout;
+exports.default = Decremento;

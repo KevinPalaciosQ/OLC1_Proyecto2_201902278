@@ -12,7 +12,9 @@ const ifIns = require('./Instructions/Instruccionif');
 const declaracion = require('./Instructions/Declaracion');
 const asignacionv = require('./Instructions/Asignacion');
 const whileIns = require('./Instructions/Mientras');
-const incremento = require('./Expresions/Incremento');
+const incremento = require('./Instructions/Incremento');
+const decremento = require('./Instructions/Decremento');
+const mayuscula = require('./Instructions/Mayuscula');
 %}
 
 %lex
@@ -151,13 +153,14 @@ INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         |FUNCIONCOUT                    {$$=$1;}
         |WHILEINS                       {$$=$1;}
         |AUMENTO                        {$$=$1;}
+        |FUNCIONTOUPPER                 {$$=$1;}
         //|ASIGNACION                     {$$=$1;}
         |IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
         |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
 ;
 AUMENTO: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.default($1,@1.first_line,@1.first_column);}
-        |IDENTIFICADOR DECREMENTO  PUNTOYCOMA                    {$$=new incremento.default(incremento.Operacion.DECREMENTO,$1,$2,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
 ;
 ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 ;
@@ -273,7 +276,8 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |EXPRESION  OR EXPRESION                              {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION  AND EXPRESION                             {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
         |NOT EXPRESION                                        {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
-
+        |FUNCIONESUPERLOWER                                   {$$=$1;}
+        //|IDENTIFICADOR INCREMENTO  PUNTOYCOMA                 {$$=new incremento.default($1,@1.first_line,@1.first_column);}
 ;
 /*
 EXPRECION_RELACIONAL : EXPRESION MAYOR EXPRESION       {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
@@ -351,12 +355,15 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
         |COUT MENOR MENOR  EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
+FUNCIONESUPERLOWER: FUNCIONTOUPPER {$$=$1;}
+        |FUNCIONTOLOWER {$$=$1;}
 
+;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.23 FUNCION TOUPPER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOUPPER: TOUPPER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
+FUNCIONTOUPPER: TOUPPER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.24 FUNCION ROUND<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA PUNTOYCOMA

@@ -22,38 +22,31 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
+const Symbol_1 = __importDefault(require("../Symbol/Symbol"));
 const Type_1 = __importStar(require("../Symbol/Type"));
 class Incremento extends Instruccion_1.Instruccion {
-    constructor(id, linea, columna) {
+    constructor(identificador, linea, columna) {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
-        this.id = id;
+        this.identificador = identificador;
     }
     interpretar(arbol, tabla) {
-        let variable = tabla.getValor(this.id);
-        if (variable != null) {
-            if (variable.getTipo() == Type_1.DataType.ENTERO || variable.getTipo() == Type_1.DataType.DECIMAL) {
-                let valor = variable.getValor() + 1;
-                tabla.setValor(this.id, valor);
+        let variable = tabla.getValor(this.identificador);
+        if (variable instanceof Symbol_1.default) {
+            let tipoVariable = variable.gettipo().getTipo();
+            if (tipoVariable === Type_1.DataType.ENTERO || tipoVariable === Type_1.DataType.DECIMAL) {
+                let valor = variable.getvalor();
+                valor++;
+                tabla.setValor(this.identificador, new Symbol_1.default(variable.gettipo(), variable.getidentificador(), valor));
                 return valor;
             }
-        }
-        else {
-            return "No se encontró la variable";
-        }
-    }
-    incrementarValor(arbol, tabla) {
-        let variable = tabla.getValor(this.id);
-        if (variable != null) {
-            if (variable.getTipo() == Type_1.DataType.ENTERO || variable.getTipo() == Type_1.DataType.DECIMAL) {
-                let valor = variable.getValor() + 1;
-                tabla.setValor(this.id, valor);
-                return valor;
+            else {
+                return console.log("Error en Semantico: No se puede incrementar la variable " + this.identificador + " porque su valor no es numérico.");
             }
-        }
-        else {
-            return "No se encontró la variable";
         }
     }
 }

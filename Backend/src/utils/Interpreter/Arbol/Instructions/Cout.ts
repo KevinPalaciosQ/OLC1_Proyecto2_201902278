@@ -17,7 +17,6 @@ export default class Cout extends Instruccion {//implementando la interfaz de in
   public interpretar(arbol: Three, tabla: SymbolTable) {
     let valor = this.expresion.interpretar(arbol, tabla);//Obtener el valor de la expresion al interpretarlo 
     if (valor instanceof Errores) return valor;
-    console.log(valor)
     if (this.saltoextra == "saltoextra") {
       valor=valor + '\n';
     }

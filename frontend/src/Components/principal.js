@@ -58,7 +58,61 @@ function Principal() {
         setCodigo(value); // Actualizar el estado con el valor del editor
     };
 
+    const ReporteSimbolos = () => {
+        // Aquí generas el contenido del reporte como lo hicimos antes
+        // Por simplicidad, dejémoslo estático
+        const simbolos = [
+            { nombre: "Symbol1", descripcion: "Description1" },
+            { nombre: "Symbol2", descripcion: "Description2" }
+            // Puedes agregar más símbolos según necesites
+        ];
 
+        // Construir el contenido del archivo HTML
+        let contenidoHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Reporte de Símbolos</title>
+            </head>
+            <body>
+                <h3>Reporte de Símbolos</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Símbolo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        // Agregar cada símbolo al contenido del archivo HTML
+        simbolos.forEach((simbolo) => {
+            contenidoHTML += `
+                <tr>
+                    <td>${simbolo.nombre}</td>
+                    <td>${simbolo.descripcion}</td>
+                </tr>
+            `;
+        });
+
+        // Cerrar el archivo HTML
+        contenidoHTML += `
+                    </tbody>
+                </table>
+            </body>
+            </html>
+        `;
+
+        // Generar un Blob con el contenido del archivo HTML
+        const blob = new Blob([contenidoHTML], { type: 'text/html;charset=utf-8' });
+        
+        // Descargar el archivo
+        saveAs(blob, 'reporte_simbolos.html', { autoBom: true }); // La opción autoBom asegura que se agregue una BOM al archivo para admitir caracteres especiales
+
+        alert('El reporte se ha descargado en tu carpeta de descargas.');
+    };
+    
     return (
         <div>
             {/*Lista de Botones de opciones*/}
@@ -85,7 +139,7 @@ function Principal() {
                     </button>
                 </div>
                 <div style={{ marginLeft: "650px" }}>
-                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}>
+                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={ReporteSimbolos}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Reporte Simbolos
                     </button>
                 </div>
