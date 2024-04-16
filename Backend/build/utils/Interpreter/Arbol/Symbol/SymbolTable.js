@@ -51,11 +51,11 @@ class SymbolTable {
     }
     //agregado para el manejo de variables
     getValueByIdentifier(identifier) {
-        let value = this.getValor(identifier);
-        if (!value) {
+        let symbol = this.getValor(identifier);
+        if (!symbol) {
             throw new Error(`Error Semántico: No se encontró la variable ${identifier}`);
         }
-        return value;
+        return symbol.tipoDato; // Devuelve el tipo de dato del símbolo
     }
 }
 exports.default = SymbolTable;

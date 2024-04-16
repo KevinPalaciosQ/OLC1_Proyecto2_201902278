@@ -25,31 +25,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
 const Type_1 = __importStar(require("../Symbol/Type"));
-class Aproximacion extends Instruccion_1.Instruccion {
+class ToString extends Instruccion_1.Instruccion {
     constructor(identificador, linea, columna) {
-        super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
+        super(new Type_1.default(Type_1.DataType.CADENA), linea, columna);
         this.identificador = identificador;
     }
     interpretar(arbol, tabla) {
-        console.log(this.identificador.tipoDato);
         try {
             let valor = this.identificador.interpretar(arbol, tabla);
-            if (typeof valor === 'number') {
-                // Redondear el valor según las reglas
-                const entero = Math.floor(valor); // Obtener la parte entera
-                const decimal = valor - entero; // Obtener la parte decimal
-                // Redondear según las reglas
-                let valorAproximado;
-                if (decimal >= 0.5) {
-                    valorAproximado = entero + 1; // Aproximar al entero superior
-                }
-                else {
-                    valorAproximado = entero; // Aproximar al número inferior
-                }
-                return valorAproximado.toFixed(2);
-            }
-            else {
-                console.log(`Error: El identificador "${this.identificador}" no es una cadena ni un número.`);
+            switch (this.identificador.tipoDato.getTipo()) {
+                case Type_1.DataType.BOOLEAN:
+                case Type_1.DataType.DECIMAL:
+                case Type_1.DataType.ENTERO:
+                    console.log("Tipo: " + typeof valor);
+                    console.log("Valor: " + valor);
+                    console.log("El tipo es: " + typeof valor);
+                    return valor.toString();
+                default:
+                    console.log(`Error: El identificador "${this.identificador}" no es un booleano, decimal ni entero.`);
             }
         }
         catch (error) {
@@ -57,4 +50,4 @@ class Aproximacion extends Instruccion_1.Instruccion {
         }
     }
 }
-exports.default = Aproximacion;
+exports.default = ToString;

@@ -17,6 +17,8 @@ const decremento = require('./Instructions/Decremento');
 const mayuscula = require('./Instructions/Mayuscula');
 const minuscula = require('./Instructions/Minuscula');
 const aproximacion = require('./Instructions/Aproximacion');
+const tipoDe = require('./Instructions/TO');
+const acadena = require('./Instructions/ToString');
 %}
 
 %lex
@@ -42,6 +44,7 @@ const aproximacion = require('./Instructions/Aproximacion');
 "false"                return  "R_FALSE"
 "char"                 return "R_CHAR";
 "std::string"          return "R_CADENA";
+"std::"                return "CASTEO";
 "bool"                 return "R_BOOL";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>SIMBOLOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ","                    return "COMA"; 
@@ -371,6 +374,8 @@ FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.defau
 FUNCIONESUPERLOWER: FUNCIONTOUPPER {$$=$1;}
        |FUNCIONTOLOWER {$$=$1;}
        |FUNCIONROUND   {$$=$1;}
+       |FUNCIONTYPEOF  {$$=$1;}
+       |FUNCIONTOSTRING {$$=$1;}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA {$$=new minuscula.default($3,@1.first_line,@1.first_column);}
@@ -382,13 +387,13 @@ FUNCIONTOUPPER: RTOUPPER PARABRE EXPRESION PARCIERRA {$$=new mayuscula.default($
 FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA  {$$=new aproximacion.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.1 FUNCION LENGTH<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONLENGHT: EXPRESION PUNTO LENGTH PARABRE PARCIERRA PUNTOYCOMA
+FUNCIONLENGHT: EXPRESION PUNTO LENGTH PARABRE PARCIERRA PUNTOYCOMA 
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.2 FUNCION TYPEOF<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTYPEOF: TYPEOF PARABRE EXPRESION PARCIERRA PUNTOYCOMA
+FUNCIONTYPEOF: TYPEOF PARABRE EXPRESION PARCIERRA  {$$=new tipoDe.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.3 FUNCION TOSTRING<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOSTRING: R_CADENA TOSTRING PARABRE EXPRESION PARCIERRA PUNTOYCOMA
+FUNCIONTOSTRING: CASTEO TOSTRING PARABRE EXPRESION PARCIERRA  {$$=new acadena.default($4,@1.first_line,@1.first_column);console.log("ToString");}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.4 FUNCION C_STR<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONCSTR: EXPRESION PUNTO C_STR PARABRE PARCIERRA PUNTOYCOMA

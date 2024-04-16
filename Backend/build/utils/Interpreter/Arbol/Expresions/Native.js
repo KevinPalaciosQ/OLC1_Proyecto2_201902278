@@ -49,8 +49,9 @@ class Nativo extends Instruccion_1.Instruccion {
             return (0, get_1.default)(value, 'valor');
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {
-            console.log(this.valor);
+            //console.log("El valor decimal es: "+this.valor);
             //return this.valor.toFixed(2);
+            //return this.valor;
             return parseFloat(this.valor);
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.BOOLEAN) {
