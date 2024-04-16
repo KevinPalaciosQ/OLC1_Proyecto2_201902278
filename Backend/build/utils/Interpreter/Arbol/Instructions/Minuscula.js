@@ -30,30 +30,19 @@ class Minuscula extends Instruccion_1.Instruccion {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
         this.identificador = identificador;
     }
-    /*
-        public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-            let variable = tabla.getValor(this.identificador);
-    
-            if (variable instanceof Simbolo) {
-                let tipoVariable = variable.gettipo().getTipo();
-                if (tipoVariable === DataType.CADENA|| tipoVariable === DataType.CARACTER) {
-                    let valor = variable.getvalor();
-                    let cadenaMayusculas = valor.toUpperCase();
-                    console.log(cadenaMayusculas);
-                    return cadenaMayusculas;
-                } else {
-                    return console.log("Error en Semántico: No se puede convertir a mayúsculas la variable " + this.identificador + " porque no es una cadena.");
-                }
-            } else {
-                return console.log("Error en Semántico: La variable " + this.identificador + " no está definida.");
+    interpretar(arbol, tabla) {
+        console.log("entró a minuscula");
+        try {
+            let valor = this.identificador.interpretar(arbol, tabla);
+            if (typeof valor === 'string') {
+                return valor.toLowerCase();
+            }
+            else {
+                console.log(`Error: El identificador "${this.identificador}" no es una cadena.`);
             }
         }
-    }
-    */
-    interpretar(arbol, tabla) {
-        try {
-        }
         catch (error) {
+            console.log(error);
         }
     }
 }

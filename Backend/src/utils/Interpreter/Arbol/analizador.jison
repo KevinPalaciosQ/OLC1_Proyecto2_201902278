@@ -156,12 +156,13 @@ INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         |FUNCIONCOUT                    {$$=$1;}
         |WHILEINS                       {$$=$1;}
         |AUMENTO                        {$$=$1;}
+        //|FUNCIONTOLOWER                 {$$=$1;}
         //|FUNCIONTOUPPER                 {$$=$1;}
         //|FUNCIONTOUPPER                 {$$=$1;}
         //|ASIGNACION                     {$$=$1;}
         |IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
-        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,"Se esperaba token",@1.first_line,@1.first_column));}//errores Sintácticos
+        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));}//errores Sintácticos
 ;
 AUMENTO: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.default($1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
@@ -227,6 +228,7 @@ DECLARACION : R_INT IDENTIFICADOR IGUAL EXPRESION  {$$=new declaracion.default($
         |R_BOOL    IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);}
         |R_CHAR    IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CARACTER),$4,@1.first_line,@1.first_column);}
         |R_CADENA  IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);}
+        |R_CADENA  IDENTIFICADOR IGUAL INSTRUCCION  {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);}
 ;
 ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
         |R_DOUBLE IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
@@ -279,7 +281,6 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |CARACTER                                             {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR                                        {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
         |PARABRE EXPRESION PARCIERRA                          {$$=$2;}
-        
         |R_TRUE                                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |R_FALSE                                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |EXPRESION MAYOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
@@ -291,9 +292,8 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |EXPRESION  OR EXPRESION                              {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION  AND EXPRESION                             {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
         |NOT EXPRESION                                        {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
-        |FUNCIONESUPERLOWER                                   {$$=$1;}
-        |FUNCIONROUND                                         {$$=$1;}    
-        //|IDENTIFICADOR INCREMENTO  PUNTOYCOMA                 {$$=new incremento.default($1,@1.first_line,@1.first_column);}
+        //|RTOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA      {$$=new mayuscula.default($3,@1.first_line,@1.first_column);console.log("minuscula");}
+        |FUNCIONESUPERLOWER                                         {$$=$1;}    
 ;
 /*
 EXPRECION_RELACIONAL : EXPRESION MAYOR EXPRESION       {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
@@ -369,14 +369,13 @@ FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.defau
         |COUT MENOR MENOR  EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
 ;
 FUNCIONESUPERLOWER: FUNCIONTOUPPER {$$=$1;}
-        |FUNCIONTOLOWER {$$=$1;}
-
+       |FUNCIONTOLOWER {$$=$1;}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new minuscula.default($3,@1.first_line,@1.first_column);console.log($3);}
+FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA {$$=new minuscula.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.23 FUNCION TOUPPER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOUPPER: RTOUPPER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);console.log("hola");}
+FUNCIONTOUPPER: RTOUPPER PARABRE EXPRESION PARCIERRA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.24 FUNCION ROUND<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new aproximacion.default($3,@1.first_line,@1.first_column);}
