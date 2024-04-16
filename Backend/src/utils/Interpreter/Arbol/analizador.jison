@@ -15,6 +15,8 @@ const whileIns = require('./Instructions/Mientras');
 const incremento = require('./Instructions/Incremento');
 const decremento = require('./Instructions/Decremento');
 const mayuscula = require('./Instructions/Mayuscula');
+const minuscula = require('./Instructions/Minuscula');
+const aproximacion = require('./Instructions/Aproximacion');
 %}
 
 %lex
@@ -71,8 +73,8 @@ const mayuscula = require('./Instructions/Mayuscula');
 "void"                   return "VOID";
 "cout"                   return "COUT";
 "endl"                   return "ENDL";
-"tolower"                return "TOLOWER";
-"toupper"                return "TOUPPER";
+"tolower"                return "RTOLOWER";
+"toupper"                return "RTOUPPER";
 "round"                  return "ROUND";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>FUNCIONES NATIVAS<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "length"                return "LENGTH";
@@ -150,10 +152,12 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
+        //DA                              {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
         |WHILEINS                       {$$=$1;}
         |AUMENTO                        {$$=$1;}
-        |FUNCIONTOUPPER                 {$$=$1;}
+        //|FUNCIONTOUPPER                 {$$=$1;}
+        //|FUNCIONTOUPPER                 {$$=$1;}
         //|ASIGNACION                     {$$=$1;}
         |IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
@@ -214,15 +218,25 @@ ELSEIFINS: ELSEIFINS RESELSE SIMPLEIF {$1.push($3); $$=$1;}
         |RESELSE SIMPLEIF {$$=[$2];}
 ;
 */
+
+//DA: DECLARACION PUNTOYCOMA {$$=$1;}
+    //    |ASIGNACIONN {$$=$1;}
+//;
 DECLARACION : R_INT IDENTIFICADOR IGUAL EXPRESION  {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
         |R_DOUBLE  IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.DECIMAL),$4,@1.first_line,@1.first_column);}
         |R_BOOL    IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);}
         |R_CHAR    IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CARACTER),$4,@1.first_line,@1.first_column);}
         |R_CADENA  IDENTIFICADOR IGUAL EXPRESION   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);}
 ;
+ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
+        |R_DOUBLE IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
+        |R_BOOL IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
+        |R_CHAR IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
+        |R_CADENA IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
+;
 
 LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {$1.push($3); $$=$1;}
-        | IDENTIFICADOR                                       {$$=[$1];}
+        | IDENTIFICADOR                                                     {$$=[$1];}
 ;
 
 TDD: R_INT         {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
@@ -265,6 +279,7 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |CARACTER                                             {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR                                        {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
         |PARABRE EXPRESION PARCIERRA                          {$$=$2;}
+        
         |R_TRUE                                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |R_FALSE                                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
         |EXPRESION MAYOR EXPRESION                            {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
@@ -277,6 +292,7 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |EXPRESION  AND EXPRESION                             {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
         |NOT EXPRESION                                        {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
         |FUNCIONESUPERLOWER                                   {$$=$1;}
+        |FUNCIONROUND                                         {$$=$1;}    
         //|IDENTIFICADOR INCREMENTO  PUNTOYCOMA                 {$$=new incremento.default($1,@1.first_line,@1.first_column);}
 ;
 /*
@@ -312,16 +328,13 @@ EXPRECIONRELACIONALYLOGICA : EXPRESION MAYOR EXPRESION       {$$=new relacional.
 FUNCIONCASTEO:  PARABRE TIPOCASTEO PARCIERRA EXPRESION 
 ;
 
-TIPOCASTEO: R_INT
-        |R_DOUBLE
-        |R_CHAR
-        |R_CADENA
+TIPOCASTEO: R_INT     {$$=new Tipo.default(Tipo.DataType.ENTERO);}
+        |R_DOUBLE     {$$=new Tipo.default(Tipo.DataType.DECIMAL);}
+        |R_CHAR       {$$=new Tipo.default(Tipo.DataType.CARACTER);}
+        |R_CADENA     {$$=new Tipo.default(Tipo.DataType.CADENA);}
 ;
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.14 AUMENTO/DECREMENTO<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONAUMENTODECREMENTO: EXPRESION MAS MAS PUNTOYCOMA
-        |EXPRESION MENOS MENOS PUNTOYCOMA
-;
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.15 ESTRUCTURAS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONESTRUCTURADATOS: VECTORES
         |ACCESOVECTORES
@@ -360,13 +373,13 @@ FUNCIONESUPERLOWER: FUNCIONTOUPPER {$$=$1;}
 
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOLOWER: TOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA
+FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new minuscula.default($3,@1.first_line,@1.first_column);console.log($3);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.23 FUNCION TOUPPER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONTOUPPER: TOUPPER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);}
+FUNCIONTOUPPER: RTOUPPER PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);console.log("hola");}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.24 FUNCION ROUND<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA PUNTOYCOMA
+FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new aproximacion.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.1 FUNCION LENGTH<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONLENGHT: EXPRESION PUNTO LENGTH PARABRE PARCIERRA PUNTOYCOMA

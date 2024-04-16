@@ -35,7 +35,7 @@ class Nativo extends Instruccion_1.Instruccion {
         this.valor = valor;
     }
     interpretar(arbol, tabla) {
-        console.log(this.valor.toString());
+        //console.log(this.valor.toString());
         if (this.tipoDato.getTipo() === Type_1.DataType.ENTERO) {
             return this.valor;
         }
@@ -45,7 +45,7 @@ class Nativo extends Instruccion_1.Instruccion {
         else if (this.tipoDato.getTipo() === Type_1.DataType.IDENTIFICADOR) {
             let value = tabla.getValor(this.valor);
             this.tipoDato = (0, get_1.default)(value, "tipo", new Type_1.default(Type_1.DataType.INDEFINIDO)); //CASTEANDO A ENTERO 
-            console.log(value);
+            //console.log(value);
             return (0, get_1.default)(value, 'valor');
         }
         else if (this.tipoDato.getTipo() === Type_1.DataType.DECIMAL) {

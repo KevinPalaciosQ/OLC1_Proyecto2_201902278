@@ -12,7 +12,7 @@ export default class Nativo extends Instruccion {
     }
   
     interpretar(arbol: Three, tabla: SymbolTable) {
-      console.log(this.valor.toString());
+      //console.log(this.valor.toString());
       if(this.tipoDato.getTipo() === DataType.ENTERO){
           return this.valor;
       }else if(this.tipoDato.getTipo() === DataType.CADENA){
@@ -20,7 +20,7 @@ export default class Nativo extends Instruccion {
       }else if(this.tipoDato.getTipo() === DataType.IDENTIFICADOR){
         let value = tabla.getValor(this.valor);
         this.tipoDato = get(value,"tipo",new Type(DataType.INDEFINIDO));//CASTEANDO A ENTERO 
-        console.log(value);
+        //console.log(value);
         return get(value, 'valor');
       }else if(this.tipoDato.getTipo() === DataType.DECIMAL){
         console.log(this.valor);

@@ -49,5 +49,13 @@ class SymbolTable {
     setTabla(Tabla) {
         this.tablaActual = Tabla;
     }
+    //agregado para el manejo de variables
+    getValueByIdentifier(identifier) {
+        let value = this.getValor(identifier);
+        if (!value) {
+            throw new Error(`Error Semántico: No se encontró la variable ${identifier}`);
+        }
+        return value;
+    }
 }
 exports.default = SymbolTable;

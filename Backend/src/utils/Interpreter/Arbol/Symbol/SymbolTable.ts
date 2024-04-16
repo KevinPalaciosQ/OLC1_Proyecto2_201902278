@@ -53,4 +53,12 @@ export default class SymbolTable {
   public setTabla(Tabla: Map<String, Simbolo>) {
     this.tablaActual = Tabla;
   }
+  //agregado para el manejo de variables
+  public getValueByIdentifier(identifier: string): any {
+    let value = this.getValor(identifier);
+    if (!value) {
+        throw new Error(`Error Semántico: No se encontró la variable ${identifier}`);
+    }
+    return value;
+}
 }
