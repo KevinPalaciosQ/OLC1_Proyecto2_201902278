@@ -370,6 +370,7 @@ FUNCIONCOUT : COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.defau
 ;
 FUNCIONESUPERLOWER: FUNCIONTOUPPER {$$=$1;}
        |FUNCIONTOLOWER {$$=$1;}
+       |FUNCIONROUND   {$$=$1;}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA {$$=new minuscula.default($3,@1.first_line,@1.first_column);}
@@ -378,7 +379,7 @@ FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA {$$=new minuscula.default($
 FUNCIONTOUPPER: RTOUPPER PARABRE EXPRESION PARCIERRA {$$=new mayuscula.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.24 FUNCION ROUND<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$=new aproximacion.default($3,@1.first_line,@1.first_column);}
+FUNCIONROUND: ROUND PARABRE EXPRESION PARCIERRA  {$$=new aproximacion.default($3,@1.first_line,@1.first_column);}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.1 FUNCION LENGTH<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONLENGHT: EXPRESION PUNTO LENGTH PARABRE PARCIERRA PUNTOYCOMA

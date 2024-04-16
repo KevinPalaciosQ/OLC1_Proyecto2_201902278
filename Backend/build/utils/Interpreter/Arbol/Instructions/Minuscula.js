@@ -31,7 +31,6 @@ class Minuscula extends Instruccion_1.Instruccion {
         this.identificador = identificador;
     }
     interpretar(arbol, tabla) {
-        console.log("entró a minuscula");
         try {
             let valor = this.identificador.interpretar(arbol, tabla);
             if (typeof valor === 'string') {

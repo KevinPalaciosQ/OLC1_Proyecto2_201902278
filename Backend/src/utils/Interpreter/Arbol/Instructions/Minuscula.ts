@@ -13,7 +13,7 @@ export default class Minuscula extends Instruccion {
     }
     
     public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        console.log("entró a minuscula")
+        
         try {
             let valor = this.identificador.interpretar(arbol, tabla);
             if (typeof valor === 'string') {

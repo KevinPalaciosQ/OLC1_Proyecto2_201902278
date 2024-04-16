@@ -1,4 +1,45 @@
 "use strict";
+/*
+import { Instruccion } from "../Abstract/Instruccion";
+import Arbol from "../Symbol/Three";
+import Simbolo from "../Symbol/Symbol";
+import tablaSimbolo from "../Symbol/SymbolTable";
+import Tipo, { DataType } from "../Symbol/Type";
+
+export default class Aproximacion extends Instruccion {
+    private identificador: Instruccion;
+
+    constructor(identificador: Instruccion, linea: number, columna: number) {
+        super(new Tipo(DataType.INDEFINIDO), linea, columna);
+        this.identificador = identificador;
+    }
+    
+    public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
+        console.log("entró a minuscula")
+        try {
+            let valor = this.identificador.interpretar(arbol, tabla);
+            if (typeof valor === 'string') {
+                return valor.toLowerCase();
+            } else if (typeof valor === 'number') {
+                const entero = Math.floor(valor); // Obtener la parte entera
+                const decimal = valor - entero; // Obtener la parte decimal
+
+                // Redondear según las reglas
+                if (decimal >= 0.5) {
+                    return Math.ceil(valor); // Aproximar al entero superior
+                } else {
+                    return Math.floor(valor); // Aproximar al número inferior
+                }
+            } else {
+                console.log(`Error: El identificador "${this.identificador}" no es una cadena ni un número.`);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+}
+*/
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -23,38 +64,82 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/*2
+import { Instruccion } from "../Abstract/Instruccion";
+import Arbol from "../Symbol/Three";
+import Simbolo from "../Symbol/Symbol";
+import tablaSimbolo from "../Symbol/SymbolTable";
+import Tipo, { DataType } from "../Symbol/Type";
+
+export default class Aproximacion extends Instruccion {
+    private identificador: Instruccion;
+
+    constructor(identificador: Instruccion, linea: number, columna: number) {
+        super(new Tipo(DataType.INDEFINIDO), linea, columna);
+        this.identificador = identificador;
+    }
+    
+    public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
+        console.log("entró a aproximacion")
+        try {
+            let valor = this.identificador.interpretar(arbol, tabla);
+            if (typeof valor === 'string') {
+                return valor.toLowerCase();
+            } else if (typeof valor === 'number') {
+                // Obtener la parte decimal
+                const decimal = valor - Math.floor(valor);
+
+                // Redondear según las reglas
+                let valorAproximado: number;
+                if (decimal >= 0.5) {
+                    valorAproximado = Math.ceil(valor); // Aproximar al entero superior
+                } else {
+                    valorAproximado = Math.floor(valor); // Aproximar al número inferior
+                }
+
+                return valorAproximado;
+            } else {
+                console.log(`Error: El identificador "${this.identificador}" no es una cadena ni un número.`);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+*/
 const Instruccion_1 = require("../Abstract/Instruccion");
 const Type_1 = __importStar(require("../Symbol/Type"));
 class Aproximacion extends Instruccion_1.Instruccion {
-    constructor(valor, linea, columna) {
+    constructor(identificador, linea, columna) {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
-        this.valor = valor;
+        this.identificador = identificador;
     }
     interpretar(arbol, tabla) {
-        // Obtener el tipo de la variable
-        let tipoVariable = this.valor % 1 === 0 ? Type_1.DataType.ENTERO : Type_1.DataType.DECIMAL;
-        // Verificar si es entero o decimal
-        if (tipoVariable === Type_1.DataType.ENTERO || tipoVariable === Type_1.DataType.DECIMAL) {
-            // Redondear el número según las reglas
-            let redondeado;
-            if (tipoVariable === Type_1.DataType.DECIMAL) {
-                const entero = Math.floor(this.valor); // Obtener la parte entera
-                const decimal = this.valor - entero; // Obtener la parte decimal
+        console.log(this.identificador.tipoDato);
+        try {
+            let valor = this.identificador.interpretar(arbol, tabla);
+            if (typeof valor === 'number') {
+                // Redondear el valor según las reglas
+                const entero = Math.floor(valor); // Obtener la parte entera
+                const decimal = valor - entero; // Obtener la parte decimal
                 // Redondear según las reglas
+                let valorAproximado;
                 if (decimal >= 0.5) {
-                    redondeado = Math.ceil(this.valor); // Aproximar al entero superior
+                    valorAproximado = entero + 1; // Aproximar al entero superior
                 }
                 else {
-                    redondeado = Math.floor(this.valor); // Aproximar al número inferior
+                    valorAproximado = entero; // Aproximar al número inferior
                 }
+                return valorAproximado.toFixed(2);
             }
             else {
-                redondeado = this.valor; // Si es entero, no hace falta redondear
+                console.log(`Error: El identificador "${this.identificador}" no es una cadena ni un número.`);
             }
-            return redondeado;
         }
-        else {
-            return console.log("Error en Semántico: El valor proporcionado no es un número entero ni decimal.");
+        catch (error) {
+            console.log(error);
         }
     }
 }
