@@ -28,6 +28,7 @@ export default class If extends Instruccion {
     public interpretar(arbol: Arbol, tabla: tablaSimbolo) {
         const condition = this.operacionIf.interpretar(arbol, tabla)
         if((condition)){
+            console.log("estoy en if");
             console.log(this.listaInstrucciones)
             const tablaLocal = new SymbolTable(tabla)
             for(let i of this.listaInstrucciones){

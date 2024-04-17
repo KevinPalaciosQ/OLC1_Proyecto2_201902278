@@ -19,6 +19,8 @@ const minuscula = require('./Instructions/Minuscula');
 const aproximacion = require('./Instructions/Aproximacion');
 const tipoDe = require('./Instructions/TO');
 const acadena = require('./Instructions/ToString');
+const ifsito = require('./Instructions/SentenciaIf');
+const elsito = require('./Instructions/Else');
 %}
 
 %lex
@@ -158,12 +160,13 @@ INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         //DA                              {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
         |WHILEINS                       {$$=$1;}
+        |SENTENCIAIF                    {$$=$1;}
         |AUMENTO                        {$$=$1;}
         //|FUNCIONTOLOWER                 {$$=$1;}
         //|FUNCIONTOUPPER                 {$$=$1;}
         //|FUNCIONTOUPPER                 {$$=$1;}
         //|ASIGNACION                     {$$=$1;}
-        |IFINS                          {$$=$1;}
+        //|IFINS                          {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
         |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));}//errores Sintácticos
 ;
@@ -176,7 +179,7 @@ ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.
 WHILEINS: RESERVADAWHILE PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA
         {$$=new whileIns.default($3,$6,@1.first_line,@1.first_column);}
 ;
-
+/*
 IFINS: SIMPLEIF {$$=$1;}
         //RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA 
         //{$$=new ifIns.default($3,$6, undefined, undefined, @1.first_line, @1.first_column);}
@@ -193,7 +196,26 @@ ELSEIFINS:
         ELSEIFINS RESELSE SIMPLEIF {$1.push($3); $$=$1;}
         |RESELSE SIMPLEIF {$$=[$2];}
 ;
-/*
+*/
+//CREANDO EL IF Y ELSE
+
+ENCAPSULAMIENTO: LLAVEABRE INSTRUCCIONES LLAVECIERRA {$$=$2;}
+        |LLAVEABRE LLAVECIERRA  {[];}
+;
+SENTENCIAIF: RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO                              {$$=new ifsito.default($3,$5,null,null,@1.first_line,@1.first_column);console.log("3");}
+        |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO RESELSE ENCAPSULAMIENTO          {$$=new ifsito.default($3,$5,null,$7,@1.first_line,@1.first_column);console.log("4");} 
+        |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO LISTA_IF                         {$$=new ifsito.default($3,$5,$6,null,@1.first_line,@1.first_column);console.log("5");}
+        |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO LISTA_IF RESELSE ENCAPSULAMIENTO {$$=new ifsito.default($3,$5,$6,$8,@1.first_line,@1.first_column);console.log("6");}
+;
+LISTA_IF: LISTA_IF  PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO {$1.push(new elsito.default($4,$6,@1.first_line,@1.first_column)); $$=$1}
+        | PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO{$$=[new elsito.default($3,$5,@1.first_line,@1.first_column)];}
+;
+
+//const ifsito = require('./Instructions/SentenciaIf');
+//const elsito = require('./Instructions/Else');
+
+
+
 IFINS: SIMPLEIF {$$=$1;}
         //RESERVADAIF PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA 
         //{$$=new ifIns.default($3,$6, undefined, undefined, @1.first_line, @1.first_column);}
@@ -295,7 +317,6 @@ EXPRESION:EXPRESION MAS EXPRESION                             {$$=new aritmetico
         |EXPRESION  OR EXPRESION                              {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION  AND EXPRESION                             {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
         |NOT EXPRESION                                        {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
-        //|RTOLOWER PARABRE EXPRESION PARCIERRA PUNTOYCOMA      {$$=new mayuscula.default($3,@1.first_line,@1.first_column);console.log("minuscula");}
         |FUNCIONESUPERLOWER                                         {$$=$1;}    
 ;
 /*

@@ -27,46 +27,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Instruccion_1 = require("../Abstract/Instruccion");
-const Type_1 = __importStar(require("../Symbol/Type"));
 const SymbolTable_1 = __importDefault(require("../Symbol/SymbolTable"));
-class If extends Instruccion_1.Instruccion {
-    constructor(operacion, listaInstrucciones, listaElseIf, listaInsElse, linea, columna) {
+const Type_1 = __importStar(require("../Symbol/Type"));
+const Break_1 = __importDefault(require("./Break"));
+class Caso extends Instruccion_1.Instruccion {
+    constructor(condicion, instrucciones, linea, columna) {
         super(new Type_1.default(Type_1.DataType.INDEFINIDO), linea, columna);
-        this.operacionIf = operacion;
-        this.listaInstrucciones = listaInstrucciones;
-        this.listaElseIf = listaElseIf;
-        this.listaInsElse = listaInsElse;
+        this.condicion = condicion;
+        this.instrucciones = instrucciones;
     }
     interpretar(arbol, tabla) {
-        const condition = this.operacionIf.interpretar(arbol, tabla);
-        if ((condition)) {
-            console.log("estoy en if");
-            console.log(this.listaInstrucciones);
-            const tablaLocal = new SymbolTable_1.default(tabla);
-            for (let i of this.listaInstrucciones) {
-                i.interpretar(arbol, tablaLocal);
-            }
-            return true;
-        }
-        else { //revisando los else if
-            if (this.listaElseIf) {
-                console.log(this.listaElseIf);
-                for (let i of this.listaElseIf) {
-                    const operation = i.interpretar(arbol, tabla);
-                    if (operation) {
-                        return false;
-                    }
-                }
-            }
-            if (this.listaInsElse) { //si existe un else se crea un nuevo entorno 
-                console.log(this.listaInsElse);
-                const tablaLocal = new SymbolTable_1.default(tabla);
-                for (let i of this.listaInsElse) {
-                    i.interpretar(arbol, tablaLocal);
-                }
-                return false;
+        let tablaLocal = new SymbolTable_1.default(tabla);
+        for (let i of this.instrucciones) {
+            let instruccion = i.interpretar(arbol, tablaLocal);
+            if (instruccion instanceof Break_1.default) {
+                break;
             }
         }
     }
 }
-exports.default = If;
+exports.default = Caso;
