@@ -195,7 +195,7 @@ class SentenciaIf extends Instruccion_1.Instruccion {
         let condicion = this.condicion.interpretar(arbol, tablaLocal);
         //console.log("condicion if");
         //console.log(condicion);
-        console.log("La condición es: ", condicion);
+        //console.log("La condición es :", condicion);
         if (typeof condicion === "boolean") {
             if (condicion === true) {
                 console.log(condicion.valueOf());

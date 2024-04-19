@@ -10,7 +10,24 @@ NO TERMINALES ={INIT
 
 }
 ---------------------------TERMINALES-----------------------------------------------------------------------------------------------------
-TERMINALES ={
-
-}
+TERMINALES ={R_INT, R_DOUBLE, R_TRUE, R_FALSE, R_CHAR, R_CADENA, CASTEO, R_BOOL, COMA, IGUALDAD, IGUAL, PUNTOYCOMA, DOSPUNTOS, INTERROGACION, PARABRE, PARCIERRA,
+LLAVEABRE, LLAVECIERRA, CORCHETECIERRA, CORCHETEABRE, NEW, RESERVADAIF, RESELSE, SWITCH, CASE, RDEFAULT, RESERVADAWHILE, FOR, DO, BREAK, CONTINUE, RETURN, VOID,
+COUT, ENDL, RTOLOWER, RTOUPPER, ROUND, LENGTH, TYPEOF, TOSTRING, C_STR, EXECUTE, INCREMENTO, MAS, DECREMENTO, MENOS, MULTIPLICACION, DIVISION, POTENCIA,
+MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
 ---------------------------PRODUCCIONES---------------------------------------------------------------------------------------------------
+
+<init>::= <instrucciones> eof
+;
+
+<instrucciones>::= <instrucciones> <instruccion>
+            |<instruccion>
+;
+
+<instruccion>::= <declaracion> ;
+            |<funcioncout>
+            |<whileins>
+            |<sentenciaif>
+            |<sentenciaswitch>
+            |<invalid>
+            |error PUNTOYCOMA
+;
