@@ -105,7 +105,9 @@ const ternario = require('./Instructions/Operadorternario');
 //>>>>>>>>>>>>>>>>>>>>>>>>>>OPERADORES RELACIONALES<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 "!="                    return "DIFERENTE";
+
 "<="                    return "MENORIGUAL";
+"<<"                    return "MDOBLE";
 "<"                     return "MENOR";
 ">="                    return "MAYORIGUAL";
 ">"                     return "MAYOR";
@@ -170,8 +172,8 @@ INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         |SENTENCIAIF                    {$$=$1;}
         |SENTENCIASWITCH                {$$=$1;}
         |AUMENTODECRE                   {$$=$1;}
-        |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));} //errores Léxicos
-        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));}//errores Sintácticos
+        |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));console.log(INVALID);console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);} //errores Léxicos
+        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }//errores Sintácticos
 ;
 AUMENTODECRE: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.default($1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
@@ -284,12 +286,13 @@ OPERADORTERNARIO: EXPRESION INTERROGACION EXPRESION DOSPUNTOS EXPRESION  {$$= ne
 ;
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 CASTEOS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONCASTEO:  PARABRE TIPODECLARACION PARCIERRA EXPRESION  {$$=new tocast.default($4,@1.first_line,@1.first_column);console.log("Casteandoa"+$4);}
+FUNCIONCASTEO:  PARABRE TIPODECLARACION PARCIERRA EXPRESION  {$$=new tocast.default($4,$2,@1.first_line,@1.first_column);}
 ;
 
 TIPODECLARACION: R_INT {$$=new Tipo.default(Tipo.DataType.ENTERO);}
         |R_DOUBLE      {$$=new Tipo.default(Tipo.DataType.DECIMAL);}
         |R_CHAR        {$$=new Tipo.default(Tipo.DataType.CARACTER);}
+        |R_CADENA      {$$=new Tipo.default(Tipo.DataType.CADENA);}
 ;
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.15 ESTRUCTURAS DE DATOS<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -322,15 +325,14 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONCOUT : COUT MENOR MENOR  EXPRESION MENOR MENOR ENDL PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"saltoextra");}
-        |COUT MENOR MENOR EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($4,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
+FUNCIONCOUT : COUT MDOBLE  EXPRESION MDOBLE ENDL PUNTOYCOMA {$$=new impresioncout.default($3,@1.first_line,@1.first_column,"saltoextra");}
+        |COUT MDOBLE EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($3,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
 ;
 FUNCIONESVARIAS: FUNCIONTOUPPER  {$$=$1;}
                 |FUNCIONTOLOWER  {$$=$1;}
                 |FUNCIONROUND    {$$=$1;}
                 |FUNCIONTYPEOF   {$$=$1;}
                 |FUNCIONTOSTRING {$$=$1;}
-                   // |FUNCIONCASTEO   {$$=$1;}
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.22 FUNCION TOLOWER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONTOLOWER: RTOLOWER PARABRE EXPRESION PARCIERRA {$$=new minuscula.default($3,@1.first_line,@1.first_column);}

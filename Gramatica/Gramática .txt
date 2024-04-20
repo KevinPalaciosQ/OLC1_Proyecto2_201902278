@@ -6,7 +6,7 @@ G = (N,T,P,S)
         P = { PRODUCCIONES }
         S = { INIT }
 ---------------------------NO TERMINALES--------------------------------------------------------------------------------------------------
-NO TERMINALES ={INIT
+NO TERMINALES ={INIT, INSTRUCCION, INSTRUCCIONES
 
 }
 ---------------------------TERMINALES-----------------------------------------------------------------------------------------------------
@@ -26,8 +26,163 @@ MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
 <instruccion>::= <declaracion> ;
             |<funcioncout>
             |<whileins>
+            |<ciclodowhile>
             |<sentenciaif>
             |<sentenciaswitch>
+            |<aumentodecre>
             |<invalid>
             |error PUNTOYCOMA
 ;
+<aumentodecre>::= IDENTIFICADOR INCREMENTO PUNTOYCOMA
+            |IDENTIFICADOR DECREMENTO PUNTOYCOMA
+;
+
+<whileins>::= RDO IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA
+;
+<ciclodowhile>::= RDO <encapsulamiento> RESERVADAWHILE PARABRE <expresion> PARCIERRA PUNTOYCOMA
+;
+<encapsulamiento>::= LLAVEABRE <instrucciones> LLAVECIERRA
+            |LLAVEABRE LLAVECIERRA
+;
+<sentenciaif> = RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento>
+            |RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento> RESELSE <encapsulamiento>
+            |RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento> <lista_if>
+;
+<lista_if>::= <lista_if> PARABRE <expresion> PARCIERRA <encapsulamiento>
+            |PARABRE <expresion> PARCIERRA <encapsulamiento>
+;
+
+<sentenciaswitch>::= SWITCH PARABRE <expresion> PARCIERRA LLAVEABRE <listacasos> LLAVECIERRA
+            |SWITCH PARABRE <expresion> PARCIERRA LLAVEABRE <listacasos> RDEFAULT DOSPUNTOS <instrucciones> LLAVECIERRA
+            |SWITCH PARABRE <expresion> PARCIERRA LLAVEABRE RDEFAULT DOSPUNTOS <instrucciones> LLAVECIERRA             
+;
+
+<listacasos>::= <listacasos> CASE <expresion> DOSPUNTOS <instrucciones>
+        |CASE <expresion> DOSPUNTOS <instrucciones> 
+;
+
+<declaracion>::= R_INT IDENTIFICADOR IGUAL <opciones> 
+            |R_DOUBLE  IDENTIFICADOR IGUAL <opciones>   
+            |R_BOOL    IDENTIFICADOR IGUAL <opciones>  
+            |R_CHAR    IDENTIFICADOR IGUAL <opciones>   
+            |R_CADENA  IDENTIFICADOR IGUAL <opciones> 
+
+<asignacionn>::=  RESINT IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
+        |R_DOUBLE IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
+        |R_BOOL IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
+        |R_CHAR IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA 
+        |R_CADENA IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
+;
+
+<expresion>::= <operaciones>                              
+            |<operacioneslogicas>                    
+            |<operacionesrelacionales>                 
+            |ENTERO                               
+            |CADENA                               
+            |DECIMAL                              
+            |CARACTER                                
+            |IDENTIFICADOR                           
+            |R_TRUE                                  
+            |R_FALSE                                  
+            |<funcionesvarias>                         
+            |<operadorternario>                        
+;
+
+<operaciones>::= MENOS <expresion> %prec NEGACIONUNARIA                 
+        |<expresion> MAS <expresion>                             
+        |<expresion> MENOS <expresion>                           
+        |<expresion> MULTIPLICACION <expresion>                   
+        |<expresion> DIVISION <expresion>                         
+        |<expresion> MODULO <expresion>                           
+        |POTENCIA PARABRE <expresion> COMA <expresion> PARCIERRA  
+        |PARABRE <expresion> PARCIERRA       
+;                      
+<operacioneslogicas>::= NOT <expresion>            
+                   |<expresion>  OR <expresion>  
+                   |<expresion>  AND <expresion> 
+;
+<operacionesrelacionales>::=  <expresion> MAYORIGUAL <expresion> 
+                         |<expresion> MAYOR <expresion>       
+                         |<expresion> MENORIGUAL <expresion>                        
+                         |<expresion> MENOR <expresion>       
+                         |<expresion> IGUALDAD <expresion>    
+                         |<expresion> DIFERENTE <expresion>  
+;
+
+<operadorternario>::= <expresion> INTERROGACION <expresion> DOSPUNTOS <expresion>  
+;
+
+<funcioncasteo>::=  PARABRE <tipodeclaracion> PARCIERRA <expresion>
+;
+
+
+<tipodeclaracion> ::= R_INT 
+                     |R_DOUBLE      
+                     |R_CHAR       
+                     |R_CADENA      
+;
+
+
+<funcionestructuradatos>::= <vectores>
+        |<accesovectores>
+        |<modificacionvectores>
+;
+
+<vectores>::= <tipovector> IDENTIFICADOR CORCHETEABRE CORCHETECIERRA IGUAL NEW <tipovector> CORCHETEABRE <expresion> CORCHETECIERRA PUNTOYCOMA
+        |<tipovector> IDENTIFICADOR CORCHETEABRE CORCHETECIERRA CORCHETEABRE CORCHETECIERRA NEW <tipovector> CORCHETEABRE <expresion> CORCHETECIERRA  CORCHETEABRE <expresion> CORCHETECIERRA PUNTOYCOMA
+        |<tipovector> IDENTIFICADOR CORCHETEABRE CORCHETECIERRA IGUAL CORCHETEABRE <listavalores CORCHETECIERRA PUNTOYCOMA 
+;
+<tipovector>::= R_INT
+               |R_DOUBLE
+               |R_CHAR
+               |R_CADENA
+;
+<listavalores>::= R_CADENA
+;
+
+
+<accesovectores>: IDENTIFICADOR CORCHETEABRE <expresion> CORCHETECIERRA
+;
+
+<modificacionvectores>::= ID CORCHETEABRE <expresion> CORCHETECIERRA IGUAL <expresion> PUNTOYCOMA
+                         |ID CORCHETEABRE <expresion> CORCHETECIERRA CORCHETEABRE <expresion> CORCHETECIERRA IGUAL <expresion> PUNTOYCOMA
+;
+
+
+
+<funcioncout>::= COUT MDOBLE  <expresion> MDOBLE ENDL PUNTOYCOMA
+        |COUT MDOBLE <expresion>  PUNTOYCOMA 
+;
+<funcionesvarias>::= <funciontoupper> 
+                |<funciontolower> 
+                |<funcionround>    
+                |<funciontypeof>   
+                |<funciontostring> 
+;
+
+<funciontolower>::= RTOLOWER PARABRE <expresion> PARCIERRA 
+;
+
+<funciontoupper>::= RTOUPPER PARABRE <expresion>  PARCIERRA 
+;
+
+<funcionround>::= ROUND PARABRE <expresion>  PARCIERRA 
+;
+
+<funcionlenght>::= <expresion>  PUNTO LENGTH PARABRE PARCIERRA PUNTOYCOMA 
+;
+
+<funciontypeof>::= TYPEOF PARABRE <expresion>  PARCIERRA  
+;
+
+<funciontostring>::= CASTEO TOSTRING PARABRE <expresion>  PARCIERRA 
+;
+
+<funcioncstr>::= <expresion>  PUNTO C_STR PARABRE PARCIERRA PUNTOYCOMA
+;
+
+<funcionexecute>: EXECUTE IDENTIFICADOR PARABRE PARCIERRA PUNTOYCOMA 
+        |EXECUTE IDENTIFICADOR PARABRE CORCHETEABRE <expresion>  CORCHETECIERRA PARCIERRA PUNTOYCOMA
+;
+
+
