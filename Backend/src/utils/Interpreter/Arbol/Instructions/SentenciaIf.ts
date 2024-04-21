@@ -147,6 +147,10 @@ export default class SentenciaIf extends Instruccion {
     }
 }
 */
+
+
+//------------------EL QUE MAS SIRVE
+
 import { Instruccion } from "../Abstract/Instruccion";
 import Arbol from "../Symbol/Three";
 import tablaSimbolo from "../Symbol/SymbolTable";

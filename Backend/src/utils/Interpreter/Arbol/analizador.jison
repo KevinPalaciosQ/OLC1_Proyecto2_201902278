@@ -26,6 +26,7 @@ const caso = require('./Instructions/Caso');
 const tocast = require('./Instructions/Casteo');
 const insdowhile = require('./Instructions/DuWhile');
 const ternario = require('./Instructions/Operadorternario');
+//const Break = require('./Instructions/BreakAuxiliar');
 //const { agregarVariable, obtenerVariable, concatenacionl, limpieza }; =require("./Instructions/identificadores");
 %}
 
@@ -75,9 +76,9 @@ const ternario = require('./Instructions/Operadorternario');
 "case"                  return "CASE";
 "default"               return "RDEFAULT";
 "while"                 return "RESERVADAWHILE";
-"for"                   return "FOR";
+"for"                   return "RFOR";
 "do"                    return "RDO";
-"break"                 return "BREAK";
+"break"                 return "RBREAK";
 "continue"              return "CONTINUE";
 "return"                return "RETURN";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>METODOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -167,35 +168,53 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         //DA                              {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
+        //|INSTRUCCIONBREAK PUNTOYCOMA               {$$=$1;}//se agregó para el caso de break    |AGREGADOS Y NO SE SI SIRVEN 
+        //|INSTRUCCIONCONTINUE             {$$=$1;}//se agregó para el caso de continue |AGREGADOS Y NO SE SI SIRVEN
+        //|INSTRUCCIONRETURN  PUNTOYCOMA  {$$=$1;}//se agregó para el caso de return   |AGREGADOS Y NO SE SI SIRVEN
+        |INSTRUCCIONFOR                 {$$=$1;}//esto es nuevo
         |WHILEINS                       {$$=$1;}
         |CICLODOWHILE                   {$$=$1;}
         |SENTENCIAIF                    {$$=$1;}
         |SENTENCIASWITCH                {$$=$1;}
         |AUMENTODECRE                   {$$=$1;}
         |INVALID                        {controller.listaErrores.push(new errores.default('ERROR LEXICO',$1,@1.first_line,@1.first_column));console.log(INVALID);console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);} //errores Léxicos
-        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }//errores Sintácticos
+        |error PUNTOYCOMA               {controller.listaErrores.push(new errores.default(`ERROR SINTACTICO`,$1,@1.first_line,@1.first_column));console.error(yytext +' Es un error sintáctico '+ ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }//errores Sintácticos
 ;
+
 AUMENTODECRE: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.default($1,@1.first_line,@1.first_column);}
         |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
 ;
+
 ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 ;
+
 //para lista de asignaciones hacer la misma logica de instrucciones
 WHILEINS: RESERVADAWHILE PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA
         {$$=new whileIns.default($3,$6,@1.first_line,@1.first_column);}
 ;
+
 CICLODOWHILE: RDO ENCAPSULAMIENTO RESERVADAWHILE PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$= new insdowhile.default($5,$2,@1.first_line,@1.first_column);}
 ;
 //CREANDO EL IF Y ELSE
 
+INSTRUCCIONCONTINUE: CONTINUE {}
+;
+//INSTRUCCIONBREAK: RBREAK {$$=$1;}// {$$=new Break.default(@first_line,@first_column);}
+//;
+INSTRUCCIONRETURN: RETURN  {} //{ $$= new Inst_return(null, @1.first_line, @1.first_column); }
+        |RETURN OPCIONES{}    //{ $$= new Inst_return($2, @1.first_line, @1.first_column); }
+;
+
 ENCAPSULAMIENTO: LLAVEABRE INSTRUCCIONES LLAVECIERRA {$$=$2;}
         |LLAVEABRE LLAVECIERRA  {[];}
 ;
+
 SENTENCIAIF: RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO                              {$$=new ifsito.default($3,$5,null,null,@1.first_line,@1.first_column);console.log("3");}
         |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO RESELSE ENCAPSULAMIENTO          {$$=new ifsito.default($3,$5,null,$7,@1.first_line,@1.first_column);console.log("4");} 
         |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO LISTA_IF                         {$$=new ifsito.default($3,$5,$6,null,@1.first_line,@1.first_column);console.log("5");}
         |RESERVADAIF PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO LISTA_IF RESELSE ENCAPSULAMIENTO {$$=new ifsito.default($3,$5,$6,$8,@1.first_line,@1.first_column);console.log("6");}
 ;
+
 LISTA_IF: LISTA_IF  PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO {$1.push(new elsito.default($4,$6,@1.first_line,@1.first_column)); $$=$1}
         | PARABRE EXPRESION PARCIERRA ENCAPSULAMIENTO{$$=[new elsito.default($3,$5,@1.first_line,@1.first_column)];}
 ;
@@ -205,12 +224,14 @@ SENTENCIASWITCH: SWITCH PARABRE EXPRESION PARCIERRA LLAVEABRE LISTACASOS LLAVECI
                 |SWITCH PARABRE EXPRESION PARCIERRA LLAVEABRE LISTACASOS RDEFAULT DOSPUNTOS INSTRUCCIONES LLAVECIERRA {$$= new inswitch.default($3,$6,$9,@1.first_line,@1.first_column);console.log("switch 2");}
                 |SWITCH PARABRE EXPRESION PARCIERRA LLAVEABRE RDEFAULT DOSPUNTOS INSTRUCCIONES LLAVECIERRA            {$$= new inswitch.default($3,null,$8,@1.first_line,@1.first_column);console.log("switch 3");}
 ;
+
 LISTACASOS: LISTACASOS CASE EXPRESION DOSPUNTOS INSTRUCCIONES {$1.push(new caso.default($3,$5,@1.first_line,@1.first_column)); $$=$1;console.log("caso a");}
         |CASE EXPRESION DOSPUNTOS INSTRUCCIONES {$$=[new caso.default($2,$4,@1.first_line,@1.first_column)];console.log("caso b");}
 ;
 
-
-
+//-----------------INSTRUCCION FOR-----------------
+INSTRUCCIONFOR:  RFOR PARABRE OPCIONES PUNTOYCOMA OPCIONES PUNTOYCOMA AUMENTODECRE PARCIERRA  ENCAPSULAMIENTO {console.log($3),console.log($7),console.log($9)}//{$$= new instruccionfor.default($3,$5, $7, $9, @1.first_line, @1.first_column);}
+;
 //DA: DECLARACION PUNTOYCOMA {$$=$1;}
     //    |ASIGNACIONN {$$=$1;}
 //;
@@ -219,7 +240,7 @@ DECLARACION : R_INT IDENTIFICADOR IGUAL OPCIONES  {$$=new declaracion.default($2
         |R_BOOL    IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);}
         |R_CHAR    IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CARACTER),$4,@1.first_line,@1.first_column);}
         |R_CADENA  IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);}
-//hola
+
 ;
 OPCIONES: EXPRESION     {$$=$1;}
         |FUNCIONCASTEO  {$$=$1;}
@@ -243,25 +264,25 @@ LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {$1.
 //---->corregir asignacion
 //ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
 //;
-//------------------------asignacion de prueba
 
 
-EXPRESION: OPERACIONES                              {$$=$1;}
-        |OPERACIONESLOGICAS                       {$$=$1;}
-        |OPERACIONESRELACIONALES                  {$$=$1;} 
-        |ENTERO                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
-        |CADENA                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
+EXPRESION: OPERACIONES                         {$$=$1;}
+        |OPERACIONESLOGICAS                    {$$=$1;}
+        |OPERACIONESRELACIONALES               {$$=$1;} 
+        |ENTERO                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.ENTERO),$1,@1.first_line,@1.first_column);}
+        |CADENA                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.CADENA),$1,@1.first_line,@1.first_column);}
         |DECIMAL                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.DECIMAL),$1,@1.first_line,@1.first_column);}
-        |CARACTER                                 {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
-        |IDENTIFICADOR                            {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
-        |R_TRUE                                   {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
-        |R_FALSE                                  {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
-        |FUNCIONESVARIAS                          {$$=$1;}    
-        |OPERADORTERNARIO                         {$$=$1;}
+        |CARACTER                              {$$=new nativo.default(new Tipo.default(Tipo.DataType.CARACTER),$1,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR                         {$$=new nativo.default(new Tipo.default(Tipo.DataType.IDENTIFICADOR),$1,@1.first_line,@1.first_column);}
+        |R_TRUE                                {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
+        |R_FALSE                               {$$=new nativo.default(new Tipo.default(Tipo.DataType.BOOLEAN),$1,@1.first_line,@1.first_column);}
+        |FUNCIONESVARIAS                       {$$=$1;}    
+        |OPERADORTERNARIO                      {$$=$1;}
 
 ;
-OPERACIONES: MENOS EXPRESION %prec NEGACIONUNARIA                 {$$=new aritmetico.default(aritmetico.tipoOp.NEGACIONUNARIA,$2,$2,@1.first_line,@1.first_column);} 
-        |EXPRESION MAS EXPRESION                             {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
+
+OPERACIONES: MENOS EXPRESION %prec NEGACIONUNARIA             {$$=new aritmetico.default(aritmetico.tipoOp.NEGACIONUNARIA,$2,$2,@1.first_line,@1.first_column);} 
+        |EXPRESION MAS EXPRESION                              {$$=new aritmetico.default(aritmetico.tipoOp.SUMA,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MENOS EXPRESION                            {$$=new aritmetico.default(aritmetico.tipoOp.RESTA,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION MULTIPLICACION EXPRESION                   {$$=new aritmetico.default(aritmetico.tipoOp.MULTIPLICACION,$1,$3,@1.first_line,@1.first_column);}
         |EXPRESION DIVISION EXPRESION                         {$$=new aritmetico.default(aritmetico.tipoOp.DIVISION,$1,$3,@1.first_line,@1.first_column);}
@@ -270,9 +291,9 @@ OPERACIONES: MENOS EXPRESION %prec NEGACIONUNARIA                 {$$=new aritme
         |PARABRE EXPRESION PARCIERRA                          {$$=$2;}
 ;
 
-OPERACIONESLOGICAS: NOT EXPRESION            {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
-                   |EXPRESION  OR EXPRESION  {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
-                   |EXPRESION  AND EXPRESION {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
+OPERACIONESLOGICAS: NOT EXPRESION             {$$=new logica.default(logica.tipoOp.NOT,$2,$2,@1.first_line,@1.first_column);}
+                   |EXPRESION  OR EXPRESION   {$$=new logica.default(logica.tipoOp.OR,$1,$3,@1.first_line,@1.first_column);}
+                   |EXPRESION  AND EXPRESION  {$$=new logica.default(logica.tipoOp.AND,$1,$3,@1.first_line,@1.first_column);}
 ;
 OPERACIONESRELACIONALES:  EXPRESION MAYORIGUAL EXPRESION  {$$=new relacional.default(relacional.tipoOp.MAYOR_IGUAL,$1,$3,@1.first_line,@1.first_column);} 
                          |EXPRESION MAYOR EXPRESION       {$$=new relacional.default(relacional.tipoOp.MAYOR,$1,$3,@1.first_line,@1.first_column);}
@@ -326,7 +347,7 @@ MODIFICACIONVECTORES: ID CORCHETEABRE EXPRESION CORCHETECIERRA IGUAL EXPRESION P
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.21 FUNCION COUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FUNCIONCOUT : COUT MDOBLE  EXPRESION MDOBLE ENDL PUNTOYCOMA {$$=new impresioncout.default($3,@1.first_line,@1.first_column,"saltoextra");}
-        |COUT MDOBLE EXPRESION  PUNTOYCOMA {$$=new impresioncout.default($3,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
+        |COUT MDOBLE EXPRESION  PUNTOYCOMA                  {$$=new impresioncout.default($3,@1.first_line,@1.first_column,"");}//EXPRESIONLOGICA
 ;
 FUNCIONESVARIAS: FUNCIONTOUPPER  {$$=$1;}
                 |FUNCIONTOLOWER  {$$=$1;}

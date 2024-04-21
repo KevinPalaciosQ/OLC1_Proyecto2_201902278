@@ -175,6 +175,7 @@ export default class SentenciaIf extends Instruccion {
     }
 }
 */
+//------------------EL QUE MAS SIRVE
 const Instruccion_1 = require("../Abstract/Instruccion");
 const SymbolTable_1 = __importDefault(require("../Symbol/SymbolTable"));
 const Type_1 = __importStar(require("../Symbol/Type"));
