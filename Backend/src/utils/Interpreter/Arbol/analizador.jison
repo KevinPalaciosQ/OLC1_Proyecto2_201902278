@@ -28,6 +28,7 @@ const insdowhile = require('./Instructions/DuWhile');
 const ternario = require('./Instructions/Operadorternario');
 //const Break = require('./Instructions/BreakAuxiliar');
 //const { agregarVariable, obtenerVariable, concatenacionl, limpieza }; =require("./Instructions/identificadores");
+const instruccionfor = require('./Instructions/Instfor');
 %}
 
 %lex
@@ -79,8 +80,8 @@ const ternario = require('./Instructions/Operadorternario');
 "for"                   return "RFOR";
 "do"                    return "RDO";
 "break"                 return "RBREAK";
-"continue"              return "CONTINUE";
-"return"                return "RETURN";
+"continue"              return "RCONTINUE";
+"return"                return "RRETURN";
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>METODOS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 "void"                   return "VOID";
 "cout"                   return "COUT";
@@ -167,8 +168,9 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
         //DA                              {$$=$1;}
+        |ASIGNACION PUNTOYCOMA        {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
-        //|INSTRUCCIONBREAK PUNTOYCOMA               {$$=$1;}//se agregó para el caso de break    |AGREGADOS Y NO SE SI SIRVEN 
+        |INSTRUCCIONBREAK PUNTOYCOMA //              {$$=$1;}//se agregó para el caso de break    |AGREGADOS Y NO SE SI SIRVEN 
         //|INSTRUCCIONCONTINUE             {$$=$1;}//se agregó para el caso de continue |AGREGADOS Y NO SE SI SIRVEN
         //|INSTRUCCIONRETURN  PUNTOYCOMA  {$$=$1;}//se agregó para el caso de return   |AGREGADOS Y NO SE SI SIRVEN
         |INSTRUCCIONFOR                 {$$=$1;}//esto es nuevo
@@ -185,22 +187,24 @@ AUMENTODECRE: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.defaul
         |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
 ;
 
-ASIGNACION: R_INT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-;
+//ASIGNACION:  IDENTIFICADOR IGUAL OTROS PUNTOYCOMA {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);} creo que este esta de mas
+//;
 
 //para lista de asignaciones hacer la misma logica de instrucciones
 WHILEINS: RESERVADAWHILE PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA
         {$$=new whileIns.default($3,$6,@1.first_line,@1.first_column);}
 ;
 
-CICLODOWHILE: RDO ENCAPSULAMIENTO RESERVADAWHILE PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$= new insdowhile.default($5,$2,@1.first_line,@1.first_column);}
+CICLODOWHILE: RDO ENCAPSULAMIENTO RESERVADAWHILE PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$= new insdowhile.default($5,$2,@1.first_line,@1.first_column);console.log("entrando al for");}
 ;
 //CREANDO EL IF Y ELSE
 
 INSTRUCCIONCONTINUE: CONTINUE {}
 ;
-//INSTRUCCIONBREAK: RBREAK {$$=$1;}// {$$=new Break.default(@first_line,@first_column);}
-//;
+
+INSTRUCCIONBREAK: RBREAK //{$$=$1;}// {$$=new Break.default(@first_line,@first_column);}
+;
+
 INSTRUCCIONRETURN: RETURN  {} //{ $$= new Inst_return(null, @1.first_line, @1.first_column); }
         |RETURN OPCIONES{}    //{ $$= new Inst_return($2, @1.first_line, @1.first_column); }
 ;
@@ -230,11 +234,22 @@ LISTACASOS: LISTACASOS CASE EXPRESION DOSPUNTOS INSTRUCCIONES {$1.push(new caso.
 ;
 
 //-----------------INSTRUCCION FOR-----------------
-INSTRUCCIONFOR:  RFOR PARABRE OPCIONES PUNTOYCOMA OPCIONES PUNTOYCOMA AUMENTODECRE PARCIERRA  ENCAPSULAMIENTO {console.log($3),console.log($7),console.log($9)}//{$$= new instruccionfor.default($3,$5, $7, $9, @1.first_line, @1.first_column);}
+TIPOSFOR: DECLARACION {$$=$1;}
+        |ASIGNACION   {$$=$1;}
 ;
-//DA: DECLARACION PUNTOYCOMA {$$=$1;}
-    //    |ASIGNACIONN {$$=$1;}
-//;
+ACTUALIZACIONFOR: IDENTIFICADOR INCREMENTO       {$$=new incremento.default($1,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR DECREMENTO       {$$=new decremento.default($1,@1.first_line,@1.first_column);}
+        |ASIGNACION                     {$$=$1;}
+;
+
+
+
+INSTRUCCIONFOR:  RFOR PARABRE TIPOSFOR PUNTOYCOMA EXPRESION PUNTOYCOMA ACTUALIZACIONFOR PARCIERRA  ENCAPSULAMIENTO {$$= new instruccionfor.default($3,$5, $7, $9, @1.first_line, @1.first_column);console.log("DECLARACION-ASIGNACION"+$3);console.log("EXPRESION-CONDICIONAL"+$5);console.log("ITERACION"+$7);console.log("ACTUALIZACION"+$9);}
+                 //for   (     dec-asig     ;       expt         ;           )
+;
+
+ASIGNACION: IDENTIFICADOR IGUAL EXPRESION  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);console.log("soy asinacion");}
+;
 DECLARACION : R_INT IDENTIFICADOR IGUAL OPCIONES  {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
         |R_DOUBLE  IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.DECIMAL),$4,@1.first_line,@1.first_column);}
         |R_BOOL    IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);}
@@ -245,13 +260,6 @@ DECLARACION : R_INT IDENTIFICADOR IGUAL OPCIONES  {$$=new declaracion.default($2
 OPCIONES: EXPRESION     {$$=$1;}
         |FUNCIONCASTEO  {$$=$1;}
 ;
-ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-        |R_DOUBLE IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-        |R_BOOL IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-        |R_CHAR IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-        |R_CADENA IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-;
-
 LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {$1.push($3); $$=$1;}
         | IDENTIFICADOR                                                     {$$=[$1];}
 ;
@@ -260,12 +268,6 @@ LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {$1.
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-//---->corregir asignacion
-//ASIGNACIONN: RESINT IDENTIFICADOR IGUAL EXPRESION PUNTOYCOMA  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);}
-//;
-
-
 EXPRESION: OPERACIONES                         {$$=$1;}
         |OPERACIONESLOGICAS                    {$$=$1;}
         |OPERACIONESRELACIONALES               {$$=$1;} 
