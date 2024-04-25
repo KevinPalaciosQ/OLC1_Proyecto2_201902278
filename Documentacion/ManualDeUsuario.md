@@ -91,6 +91,7 @@ Nuevo Archivo:
 ![](reportee.png)
 ---
 # 5. Recomendaciones 👀
+Tener las liberías mencionadas anteriormente instaladas y usar los archivos de entrada basados en c++.
 ---
 # 6. Créditos 🧐
 ---
