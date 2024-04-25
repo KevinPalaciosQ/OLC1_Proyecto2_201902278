@@ -23,8 +23,13 @@ MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
             |<instruccion>
 ;
 
-<instruccion>::= <declaracion> ;
+<instruccion>::= <declaracion> PUNTOYCOMA
+            |<asignacion> PUNTOYCOMA
             |<funcioncout>
+            |<instruccionbreak> PUNTOYCOMA
+            |<instruccioncontinue> PUNTOYCOMA
+            |<instruccionreturn> PUNTOYCOMA
+            |<instruccionfor>
             |<whileins>
             |<ciclodowhile>
             |<sentenciaif>
@@ -39,15 +44,29 @@ MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
 
 <whileins>::= RDO IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA
 ;
+
 <ciclodowhile>::= RDO <encapsulamiento> RESERVADAWHILE PARABRE <expresion> PARCIERRA PUNTOYCOMA
 ;
+<instruccioncontinue>::= CONTINUE
+;
+
+<instruccionbreak>::= RBREAK
+;
+
+<instruccionreturn>::= RETURN
+                |RETURN OPCIONES
+;
+
+
 <encapsulamiento>::= LLAVEABRE <instrucciones> LLAVECIERRA
             |LLAVEABRE LLAVECIERRA
 ;
+
 <sentenciaif> = RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento>
             |RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento> RESELSE <encapsulamiento>
             |RESERVADAIF PARABRE <expresion> PARCIERRA <encapsulamiento> <lista_if>
 ;
+
 <lista_if>::= <lista_if> PARABRE <expresion> PARCIERRA <encapsulamiento>
             |PARABRE <expresion> PARCIERRA <encapsulamiento>
 ;
@@ -61,17 +80,32 @@ MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
         |CASE <expresion> DOSPUNTOS <instrucciones> 
 ;
 
-<declaracion>::= R_INT IDENTIFICADOR IGUAL <opciones> 
-            |R_DOUBLE  IDENTIFICADOR IGUAL <opciones>   
-            |R_BOOL    IDENTIFICADOR IGUAL <opciones>  
-            |R_CHAR    IDENTIFICADOR IGUAL <opciones>   
-            |R_CADENA  IDENTIFICADOR IGUAL <opciones> 
+<tiposfor>::= <declaracion> 
+        |<asignacion>
+;
+<actualizacionfor>::= IDENTIFICADOR INCREMENTO       {$$=new incremento.default($1,@1.first_line,@1.first_column);}
+        |IDENTIFICADOR DECREMENTO       {$$=new decremento.default($1,@1.first_line,@1.first_column);}
+        |ASIGNACION                     {$$=$1;}
+;
 
-<asignacionn>::=  RESINT IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
-        |R_DOUBLE IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
-        |R_BOOL IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
-        |R_CHAR IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA 
-        |R_CADENA IDENTIFICADOR IGUAL <expresion> PUNTOYCOMA  
+<instruccionfor>::=  RFOR PARABRE <tiposfor> PUNTOYCOMA <expresion> PUNTOYCOMA <actualizacionfor> PARCIERRA  <encapsulamiento> 
+;
+
+<asignacion>::= <lista_identificadores> IGUAL <expresion>
+;
+
+<declaracion>::= R_INT <lista_identificadores>IGUAL <opciones> 
+            |R_DOUBLE  <lista_identificadores> IGUAL <opciones>   
+            |R_BOOL    <lista_identificadores> IGUAL <opciones>  
+            |R_CHAR    <lista_identificadores> IGUAL <opciones>   
+            |R_CADENA  <lista_identificadores> IGUAL <opciones> 
+;
+
+<opciones>::= <expresion>     {$$=$1;}
+        |<funcioncasteo>  {$$=$1;}
+;
+
+<lista_identificadores>::= <lista_identificadores> COMA IDENTIFICADOR
 ;
 
 <expresion>::= <operaciones>                              
@@ -148,11 +182,10 @@ MODULO, DIFERENTE, MENOR, MAYORIGUAL, MAYOR, OR, AND, NOT}
                          |ID CORCHETEABRE <expresion> CORCHETECIERRA CORCHETEABRE <expresion> CORCHETECIERRA IGUAL <expresion> PUNTOYCOMA
 ;
 
-
-
 <funcioncout>::= COUT MDOBLE  <expresion> MDOBLE ENDL PUNTOYCOMA
         |COUT MDOBLE <expresion>  PUNTOYCOMA 
 ;
+
 <funcionesvarias>::= <funciontoupper> 
                 |<funciontolower> 
                 |<funcionround>    

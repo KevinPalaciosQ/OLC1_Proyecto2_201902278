@@ -29,6 +29,7 @@ const ternario = require('./Instructions/Operadorternario');
 //const Break = require('./Instructions/BreakAuxiliar');
 const { agregarVariable, obtenerVariable, concatenacionl, limpieza } =require("./Instructions/identificadores");
 const instruccionfor = require('./Instructions/Instfor');
+const vacio =require('./Instructions/Void');
 %}
 
 %lex
@@ -167,6 +168,7 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
 ;
 
 INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1;}
+        //|METODOS                        {$$=$1;}
         |ASIGNACION PUNTOYCOMA        {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
         |INSTRUCCIONBREAK PUNTOYCOMA //              {$$=$1;}//se agregó para el caso de break    |AGREGADOS Y NO SE SI SIRVEN 
@@ -374,8 +376,14 @@ FUNCIONTOSTRING: CASTEO TOSTRING PARABRE EXPRESION PARCIERRA  {$$=new acadena.de
 FUNCIONCSTR: EXPRESION PUNTO C_STR PARABRE PARCIERRA PUNTOYCOMA
 ;
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.25.5 FUNCION EXECUTE<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-FUNCIONEXECUTE: EXECUTE IDENTIFICADOR PARABRE PARCIERRA PUNTOYCOMA 
-        |EXECUTE IDENTIFICADOR PARABRE CORCHETEABRE EXPRESION CORCHETECIERRA PARCIERRA PUNTOYCOMA
+FUNCIONEXECUTE: EXECUTE LLAMADA PUNTOYCOMA
+
+//        |EXECUTE LLAMADA PARABRE CORCHETEABRE EXPRESION CORCHETECIERRA PARCIERRA PUNTOYCOMA
 ;
 
-
+METODOS: VOID IDENTIFICADOR PARABRE PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA {$$=new vacio.default($2,$6,@1.first_line,@1.first_column);}
+                                                                                //{$$=new acadena.default($4,@1.first_line,@1.first_column);console.log("ToString");}
+;
+LLAMADA: IDENTIFICADOR PARABRE PARCIERRA 
+        |IDENTIFICADOR PARABRE EXPRESION PARCIERRA {}
+;

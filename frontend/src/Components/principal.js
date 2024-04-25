@@ -8,22 +8,66 @@ import Services from '../Services/Service';
 //import Viz from 'viz.js';
 function Principal() {
     //         id,   funcion
-    //const [error, setError] = useState(''); // Estado para almacenar Errores
-  //  const[astgraph, setAstgraph] = useState(`digraph G { "AST"->"INICIO";}`);
+    const [error, setError] = useState([]);
+    //  const[astgraph, setAstgraph] = useState(`digraph G { "AST"->"INICIO";}`);
     const inputFileRef = useRef(null);
     const [codigo, setCodigo] = useState('');
     const [nombreArchivo, setNombreArchivo] = useState('');
     const [salida, setSalida] = useState(''); // Estado para almacenar la salida del analizador
-
-    const ejecutar  = async() => {
-        const response = await Services.parse(codigo);
+    const [showCrearPopup, setShowCrearPopup] = useState(false);
+    const [showCrearPopup1, setShowCrearPopup1] = useState(false);
+    const [showCrearPopup2, setShowCrearPopup2] = useState(false);
+    const[simbolos, setsimbolos] = useState([]);
+    const[body,setbody]=useState('');
+    let URL="https://quickchart.io/graphviz?graph=";
+    const toggleCrearPopup = () => {
+        setShowCrearPopup(!showCrearPopup);
+    };
+    const toggleCrearPopup1 = () => {
         
-        console.log("xd"+response.consola);    
+        setShowCrearPopup1(!showCrearPopup1);
+    };
+    const toggleCrearPopup2 = () => {
+        setShowCrearPopup2(!showCrearPopup2);
+    };    
+    const closePopup = (popup) => {
+        switch (popup) {
+            case 'crear':
+                setShowCrearPopup(false);
+                break;
+            case 'AST':
+                setShowCrearPopup1(false);
+                break;
+            case 'errores':
+                setShowCrearPopup2(false);
+                break;                        
+            default:
+                break;
+        }
+    };    
+    const ejecutar = async () => {
+        const response = await Services.parse(codigo);
+
+        console.log("xd" + response.consola);
         setSalida(response.consola);
-        console.log("listaerrores"+response.errores)
-        console.log("listasimbolos"+response.simbolos)
+        console.log("listaerrores" + response.errores)
+        console.log("listasimbolos" + response.simbolos)
         //setAstgraph(response.astgraph);
         //console.log("contenido"+response.astgraph);
+        // Recorriendo los símbolos si es un array
+        console.log("Recorriendo");
+        //console.log("soy un arbol"+response.ast);
+        setsimbolos(response.simbolos);
+        setbody(response.ast);
+
+        response.errores.forEach(error => {
+            console.log(error); // Aquí puedes hacer lo que necesites con cada error
+        });
+        setError(response.errores);
+        response.simbolos.forEach(simbolo => {
+            console.log(simbolo); // Aquí puedes hacer lo que necesites con cada símbolo
+        
+        });
     }
     
     const abrirArchivo = (event) => {
@@ -65,120 +109,10 @@ function Principal() {
     const onchangecodigo = (value) => {
         setCodigo(value); // Actualizar el estado con el valor del editor
     };
-    const ReporteErrores = () => {
-        // Supongamos que tienes una lista de errores con la misma estructura que los símbolos
-        const errores = [
-            { numero:"1", tipo: "Léxico", descripcion: "El cáracter '$' no pertenece al lenguaje.", linea: 5, columna: 3 },
-            {numero:"2", tipo: "Sintáctico", descripcion: "Se encontró un Identificador y se esperaba Expresión.", linea: 6, columna: 3 }
-            // Puedes agregar más errores según necesites
-        ];
-    
-        // Construir el contenido del archivo HTML
-        let contenidoHTML = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Reporte de Errores</title>
-                <!-- Bootstrap CSS -->
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                <style>
-                    body {
-                        background-color: #e3ded7; /* Fondo de la página */
-                    }
-                    .titulo {
-                        text-align: center; /* Centrar el título */
-                        color: #000; /* Color del título */
-                        font-weight: bold; /* Texto en negrita */
-                    }
-                    .tabla-errores {
-                        background-color: #e2432d; /* Fondo de las tablas */
-                        color: #fff; /* Color del texto en las tablas */
-                    }
-                    .tabla-errores th {
-                        background-color: #5064a5; /* Fondo de los encabezados de las tablas */
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h3 class="mt-5 mb-4 titulo">Reporte de Errores</h3>
-                    <table class="table table-striped tabla-errores">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Tipo</th>
-                                <th>Descripción</th>
-                                <th>Línea</th>
-                                <th>Columna</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-        `;
-    
-        // Agregar cada error al contenido del archivo HTML
-        errores.forEach((error, index) => {
-            contenidoHTML += `
-                <tr>
-                    <td>${error.numero}</td>
-                    <td>${error.tipo}</td>
-                    <td>${error.descripcion}</td>
-                    <td>${error.linea}</td>
-                    <td>${error.columna}</td>
-                </tr>
-            `;
-        });
-    
-        // Cerrar el archivo HTML
-        contenidoHTML += `
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Bootstrap JS (opcional, solo si necesitas funcionalidad de Bootstrap) -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-            </body>
-            </html>
-        `;
-    
-        // Generar un Blob con el contenido del archivo HTML
-        const blob = new Blob([contenidoHTML], { type: 'text/html;charset=utf-8' });
-        
-        // Descargar el archivo
-        saveAs(blob, 'reporte_errores.html', { autoBom: true }); // La opción autoBom asegura que se agregue una BOM al archivo para admitir caracteres especiales
-    
-        alert('El reporte de errores se ha descargado en tu carpeta de descargas.');
-    };
-    
-    const ReporteSimbolos = () => {
-        const simbolos =  Services.tabla();
-        //const simbolo = await Services.tabla();/
-        console.log("simbolos"+simbolos);
-    };
+ 
 
 
-        const generarHTMLconImagen = () => {
-            // URL de la imagen PNG
-            var urlImagen = "C:\\Users\\kevin\\Downloads\\graphviz.png"; // Modifica esta URL según tu ubicación
-            
-            // Crear el HTML con la imagen incrustada
-            var htmlConImagen = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Reporte con Imagen</title>
-                </head>
-                <body>
-                    <h1>Reporte</h1>
-                    <img src="${urlImagen}" alt="Imagen">
-                </body>
-                </html>
-            `;
-    
-            // Crear un Blob con el HTML
-            var blob = new Blob([htmlConImagen], { type: 'text/html' });
-    
-            // Guardar el Blob como archivo
-            saveAs(blob, 'ReporteAST.html');
-        };
+
     
     return (
         <div>
@@ -202,17 +136,17 @@ function Principal() {
                     </button>
                 </div>
                 <div style={{ marginLeft: "500px" }}>
-                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(255, 0, 0, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={null}>
+                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(255, 0, 0, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={toggleCrearPopup2}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Reporte Errores
                     </button>
                 </div>
                 <div style={{ marginLeft: "650px" }}>
-                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={null}>
+                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={toggleCrearPopup}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Reporte Simbolos
                     </button>
                 </div>
                 <div style={{ marginLeft: "800px" }}>
-                <button className="tab_botones_inicio_diseno" style={{ background: "rgba(119, 199, 165, 0.6)", color: "black", fontWeight: "bold", width: "180px" }}onClick={generarHTMLconImagen}>
+                <button className="tab_botones_inicio_diseno" style={{ background: "rgba(119, 199, 165, 0.6)", color: "black", fontWeight: "bold", width: "180px" }}onClick={toggleCrearPopup1}>
     <i className="fa fa-bookmark" aria-hidden="true"></i> Generar AST
 </button>
 
@@ -257,6 +191,161 @@ function Principal() {
             <div id="grafoarbol">
 
         </div> 
+        {showCrearPopup && (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)'
+            }}>
+                <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    padding: '1rem',
+                    borderRadius: '0.5rem',
+                    width: '60%'
+                }}>
+                    <button style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        color: 'gray',
+                        cursor: 'pointer'
+                    }} onClick={() => closePopup('crear')}>
+                        X
+                    </button>
+                    <h2 style={{
+                        fontSize: '1.25rem',
+                        fontWeight: '600',
+                        marginBottom: '0.5rem'
+                    }}> </h2>
+<table style={{ borderCollapse: "collapse", width: "100%", border: "1px solid #ddd" }}>
+  <thead>
+    <tr style={{ backgroundColor: "#f2f2f2" }}>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>#</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>id</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>valor</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>TipoDato</th>
+    </tr>
+  </thead>
+  <tbody>
+    {simbolos.map((item, index) => (
+      <tr key={index} style={{ backgroundColor: index % 2 === 0 ? "#C2B5FF" : "white" }}>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{index + 1}</td>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{item.id}</td>
+        {/* Dividir el campo valorsito en valor y TipoDato */}
+        {item.valorsito.split(',').map((parte, index) => (
+          <td key={index} style={{ border: "1px solid #ddd", padding: "8px" }}>{parte}</td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+
+                </div>
+            </div>
+
+        )}
+        {showCrearPopup1 && (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)'
+            }}>
+                <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    padding: '1rem',
+                    borderRadius: '0.5rem',
+                    width: '60%'
+                }}>
+                    <button style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        color: 'gray',
+                        cursor: 'pointer'
+                    }} onClick={() => closePopup('AST')}>
+                        X
+                    </button>
+                    <h2 style={{
+                        fontSize: '1.25rem',
+                        fontWeight: '600',
+                        marginBottom: '0.5rem'
+                    }}> </h2>
+                    <img src={URL+body} alt="Imagen" id='astimg'style={{ width: '900px', height: '900px' }}></img>
+                </div>
+            </div>
+
+        )}
+                {showCrearPopup2 && (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)'
+            }}>
+                <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    padding: '1rem',
+                    borderRadius: '0.5rem',
+                    width: '60%'
+                }}>
+                    <button style={{
+                        position: 'absolute',
+                        top: '1rem',
+                        right: '1rem',
+                        color: 'gray',
+                        cursor: 'pointer'
+                    }} onClick={() => closePopup('errores')}>
+                        X
+                    </button>
+                    <h2 style={{
+                        fontSize: '1.25rem',
+                        fontWeight: '600',
+                        marginBottom: '0.5rem'
+                    }}> </h2>
+<table style={{ borderCollapse: "collapse", width: "100%", border: "1px solid #ddd" }}>
+  <thead>
+    <tr style={{ backgroundColor: "#f2f2f2" }}>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Tipo de Error</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Descripción</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Fila</th>
+      <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Columna</th>
+    </tr>
+  </thead>
+  <tbody>
+    {error.map((error, index) => (
+      <tr key={index} style={{ backgroundColor: index % 2 === 0 ? "#C2B5FF" : "white" }}>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{error.tipoError}</td>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{error.desc}</td>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{error.fila}</td>
+        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{error.columna}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+
+                </div>
+            </div>
+
+        )}
         </div >
         
     );

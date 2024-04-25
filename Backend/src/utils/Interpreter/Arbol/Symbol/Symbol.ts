@@ -28,4 +28,7 @@ export default class Symbol {
   public setvalor(value: any) {
     this.valor = value;
   }
+  public getDataTypo(): String {
+    return this.tipo.getDataType();
+  }  
 }

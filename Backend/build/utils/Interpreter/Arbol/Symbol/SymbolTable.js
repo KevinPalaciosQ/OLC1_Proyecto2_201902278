@@ -5,7 +5,6 @@ class SymbolTable {
         this.tablasimbolos = []; //esto es nuevo
         this.tablaAnterior = anterior;
         this.tablaActual = new Map();
-        this.tablasimbolos = []; //esto es nuevo
     }
     getValor(id) {
         let valor = this.tablaActual.get(id);
@@ -65,13 +64,13 @@ class SymbolTable {
             console.log(`Key: ${key}, Value: ${value}`);
         });
     }
-    getlistatablas() {
-        let tablax = []; // Explicitly declare the type as an array of strings
+    getTablasimbolos() {
+        const tablaInterpretada = new Map();
         this.tablaActual.forEach((value, key) => {
-            console.log(`Key: ${key}, Value: ${value}`);
-            tablax.push((`Key: ${key}, Value: ${value}`));
+            //console.log(`Key: ${key}, Value: ${value.getvalor()}`);
+            tablaInterpretada.set(key, value.getvalor() + "," + value.getDataTypo()); // Suponiendo que getvalor() devuelve el valor interpretado
         });
-        return tablax;
+        return tablaInterpretada;
     }
 }
 exports.default = SymbolTable;

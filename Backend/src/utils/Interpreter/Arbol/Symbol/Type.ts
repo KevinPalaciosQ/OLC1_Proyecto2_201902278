@@ -9,6 +9,28 @@ export default class Type{
     public setTipo(tipo: DataType): void {
       this.tipo = tipo;
     }
+    public getDataType(): String {
+      switch (this.tipo) {
+        case DataType.ENTERO:
+          return "ENTERO";
+        case DataType.DECIMAL:
+          return "DECIMAL";
+        case DataType.CADENA:
+          return "CADENA";
+        case DataType.CARACTER:
+          return "CARACTER";
+        case DataType.BOOLEAN:
+          return "BOOLEAN";
+        case DataType.IDENTIFICADOR:
+          return "IDENTIFICADOR";
+        case DataType.INDEFINIDO:
+          return "INDEFINIDO";
+        case DataType.VOID:
+          return "VOID";
+        default:
+          return "TIPO NO DEFINIDO";
+      }
+    }
 }
   
 export enum DataType {
@@ -21,3 +43,4 @@ export enum DataType {
     INDEFINIDO,
     VOID
 }
+

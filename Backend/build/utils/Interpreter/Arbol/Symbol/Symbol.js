@@ -24,5 +24,8 @@ class Symbol {
     setvalor(value) {
         this.valor = value;
     }
+    getDataTypo() {
+        return this.tipo.getDataType();
+    }
 }
 exports.default = Symbol;
