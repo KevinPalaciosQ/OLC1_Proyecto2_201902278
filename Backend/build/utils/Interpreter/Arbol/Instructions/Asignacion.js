@@ -36,8 +36,10 @@ class Asignacion extends Instruccion_1.Instruccion {
         this.valor = valor;
     }
     interpretar(arbol, tabla) {
-        const valorToAsign = this.valor.interpretar(arbol, tabla);
-        tabla.setValor(this.id, new Symbol_1.default(this.valor.tipoDato, this.id, valorToAsign), false); //en lugar de setear un campo lo asigna
+        for (let i = 0; i < this.id.length; i++) {
+            const valorToAsign = this.valor.interpretar(arbol, tabla);
+            tabla.setValor(this.id[i], new Symbol_1.default(this.valor.tipoDato, this.id[i], valorToAsign), false); //en lugar de setear un campo lo asigna
+        }
         return null;
     }
 }

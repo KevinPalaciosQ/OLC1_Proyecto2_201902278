@@ -4,10 +4,12 @@ import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from "@codemirror/lang-cpp";
 import { saveAs } from 'file-saver';
 import Services from '../Services/Service';
+//import Graphviz from 'graphviz-react';
 //import Viz from 'viz.js';
 function Principal() {
     //         id,   funcion
     //const [error, setError] = useState(''); // Estado para almacenar Errores
+  //  const[astgraph, setAstgraph] = useState(`digraph G { "AST"->"INICIO";}`);
     const inputFileRef = useRef(null);
     const [codigo, setCodigo] = useState('');
     const [nombreArchivo, setNombreArchivo] = useState('');
@@ -15,9 +17,13 @@ function Principal() {
 
     const ejecutar  = async() => {
         const response = await Services.parse(codigo);
+        
         console.log("xd"+response.consola);    
         setSalida(response.consola);
-        
+        console.log("listaerrores"+response.errores)
+        console.log("listasimbolos"+response.simbolos)
+        //setAstgraph(response.astgraph);
+        //console.log("contenido"+response.astgraph);
     }
     
     const abrirArchivo = (event) => {
@@ -143,95 +149,9 @@ function Principal() {
     };
     
     const ReporteSimbolos = () => {
-        // Simbolos
-        const simbolos = [
-            { numero:1,id: 1, tipo1: "Variable", tipo2: "Funcion1", entorno: "Funcion1", linea: 15, columna: 20 },
-            { numero:2,id: 2, tipo1: "Varible", tipo2: "Funcion2", entorno: "Funcion2", linea: 20, columna: 13 }
-            // Puedes agregar más símbolos según necesites
-        ];
-    
-        // Construir el contenido del archivo HTML
-        let contenidoHTML = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Tabla de Símbolos</title>
-                <!-- Bootstrap CSS -->
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                <style>
-                    body {
-                        background-color: #965fd4; /* Púrpura */
-                        color: #fff; /* Texto blanco */
-                    }
-                    .tabla-simbolos {
-                        background-color: #8bd450; /* Verde lima */
-                        color: #fff; /* Texto blanco */
-                    }
-                    .tabla-simbolos th {
-                        background-color: #965fd4; /* Púrpura */
-                        color: #fff; /* Texto blanco */
-                        font-weight: bold; /* Texto en negrita */
-                    }
-                    .titulo {
-                        text-align: center; /* Centrar el texto */
-                        color: #1d1a2f; /* Texto blanco */
-                        font-weight: bold; /* Texto en negrita */
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h3 class="mt-5 mb-4 titulo">Tabla de Símbolos</h3>
-                    <table class="table table-striped tabla-simbolos">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>ID</th>
-                                <th>Tipo</th>
-                                <th>Tipo</th>
-                                <th>Entorno</th>
-                                <th>Línea</th>
-                                <th>Columna</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-        `;
-    
-        // Agregar cada símbolo al contenido del archivo HTML
-        simbolos.forEach((simbolo) => {
-            contenidoHTML += `
-                <tr>
-                    <td>${simbolo.numero}</td>
-                    <td>${simbolo.id}</td>
-                    <td>${simbolo.tipo1}</td>
-                    <td>${simbolo.tipo2}</td>
-                    <td>${simbolo.entorno}</td>
-                    <td>${simbolo.linea}</td>
-                    <td>${simbolo.columna}</td>
-                </tr>
-            `;
-        });
-    
-        // Cerrar el archivo HTML
-        contenidoHTML += `
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Bootstrap JS (opcional, solo si necesitas funcionalidad de Bootstrap) -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-            </body>
-            </html>
-        `;
-    
-        // Generar un Blob con el contenido del archivo HTML
-        const blob = new Blob([contenidoHTML], { type: 'text/html;charset=utf-8' });
-        
-        // Descargar el archivo
-        saveAs(blob, 'reporte_simbolos.html', { autoBom: true }); // La opción autoBom asegura que se agregue una BOM al archivo para admitir caracteres especiales
-    
-        alert('El reporte se ha descargado en tu carpeta de descargas.');
+        const simbolos =  Services.tabla();
+        //const simbolo = await Services.tabla();/
+        console.log("simbolos"+simbolos);
     };
 
 
@@ -264,10 +184,6 @@ function Principal() {
         <div>
             {/*Lista de Botones de opciones*/}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
             <div>
                 <div style={{ marginLeft: "40px" }}>
                     <label htmlFor="file-upload" className="tab_botones_inicio_diseno" style={{ background: "rgba(0, 128, 128, 0.2)",color:"white", textAlignLast: "center",fontWeight: "bold"}}>
@@ -286,12 +202,12 @@ function Principal() {
                     </button>
                 </div>
                 <div style={{ marginLeft: "500px" }}>
-                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(255, 0, 0, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={ReporteErrores}>
+                    <button  className="tab_botones_inicio_diseno" style={{ background: "rgba(255, 0, 0, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={null}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Reporte Errores
                     </button>
                 </div>
                 <div style={{ marginLeft: "650px" }}>
-                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={ReporteSimbolos}>
+                    <button className="tab_botones_inicio_diseno" style={{ background: "rgba(113, 113, 113, 0.5)", color: "black",fontWeight: "bold", width: "180px"}}onClick={null}>
                         <i className="fa fa-bookmark" aria-hidden="true"></i> Reporte Simbolos
                     </button>
                 </div>
@@ -338,7 +254,11 @@ function Principal() {
             <button className='enviar' onClick={ejecutar}>▷</button>
             
             {/*-----------------------------------------*/}
+            <div id="grafoarbol">
+
+        </div> 
         </div >
+        
     );
 }
 

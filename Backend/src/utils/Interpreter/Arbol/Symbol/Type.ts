@@ -18,5 +18,6 @@ export enum DataType {
     CARACTER, //4
     BOOLEAN,//3                   YA
     IDENTIFICADOR,//              YA
-    INDEFINIDO
+    INDEFINIDO,
+    VOID
 }

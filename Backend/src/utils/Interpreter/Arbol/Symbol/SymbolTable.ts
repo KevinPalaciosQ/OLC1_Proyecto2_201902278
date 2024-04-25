@@ -1,13 +1,17 @@
+import { realpathSync } from 'fs';
 import Simbolo from './Symbol';
 
 export default class SymbolTable {
   private tablaAnterior: SymbolTable | any;
   private tablaActual: Map<String, Simbolo>;//Map es una Tabla Hash
+  private tablasimbolos: Map<String, Simbolo>[]=[];//esto es nuevo
 
   constructor(anterior?: SymbolTable) {
     this.tablaAnterior = anterior;
     this.tablaActual = new Map<String, Simbolo>();
+    this.tablasimbolos=[]//esto es nuevo
   }
+
 
   public getValor(id: String): any{
     let valor = this.tablaActual.get(id);
@@ -36,6 +40,7 @@ export default class SymbolTable {
         actual = actual.getAnterior();
       }
       if(!oldValue) console.log('Error la variable no existe')//Si el valor anterior nunca existio la variable que se trata de actualizar no existe
+      this.tablasimbolos.push(new Map(this.tablaActual))//se guarda la tabla actual en la lista de tablas
     }  
     return null;
   }
@@ -61,4 +66,17 @@ export default class SymbolTable {
     }
     return symbol.tipoDato; // Devuelve el tipo de dato del símbolo
   }
+  public creartablasimbolos(){
+    this.tablaActual.forEach((value, key) => {
+      console.log(`Key: ${key}, Value: ${value}`);
+  });
+  }
+  public getlistatablas(){
+    let tablax: string[] = [];// Explicitly declare the type as an array of strings
+     this.tablaActual.forEach((value, key) => {
+     console.log(`Key: ${key}, Value: ${value}`);
+     tablax.push((`Key: ${key}, Value: ${value}`));
+   })
+ return tablax;
+   }
 }

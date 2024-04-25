@@ -20,3 +20,7 @@ export const ping = async () => {
     const { data } = await instance.get("/ping")
     return data
 }
+export const tabla=async()=>{
+    const {data}=await instance.get("/tabla")
+    return data
+}

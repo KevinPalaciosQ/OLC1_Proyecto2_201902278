@@ -25,4 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const health = __importStar(require("../controller/health/ping"));
 const parser = __importStar(require("../controller/parser/parser"));
-exports.default = Object.assign(Object.assign({}, health), parser);
+const arbolast = __importStar(require("../controller/AST/Arbol_AST"));
+const getSymbol = __importStar(require("../controller/parser/parser"));
+exports.default = Object.assign(Object.assign(Object.assign(Object.assign({}, health), parser), arbolast), getSymbol);

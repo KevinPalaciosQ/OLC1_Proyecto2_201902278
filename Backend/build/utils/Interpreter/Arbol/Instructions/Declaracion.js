@@ -37,7 +37,9 @@ class Declaracion extends Instruccion_1.Instruccion {
         this.valor = valor;
     }
     interpretar(arbol, tabla) {
-        tabla.setValor(this.id, new Symbol_1.default(this.tipo, this.id, this.valor.interpretar(arbol, tabla))); //definir el tipo de dato que se mande sea igual al tipo definido
+        for (let i = 0; i < this.id.length; i++) {
+            tabla.setValor(this.id[i], new Symbol_1.default(this.tipo, this.id[i], this.valor.interpretar(arbol, tabla))); // Definir el tipo de dato que se mande sea igual al tipo definido
+        }
         return null;
     }
 }

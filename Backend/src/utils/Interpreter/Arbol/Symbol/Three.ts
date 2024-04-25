@@ -37,9 +37,11 @@ export default class Three {
     this.errores = value;
   }
   public gettablaGlobal(): tablaSimbolo {
+    
     return this.tablaGlobal;
   }
   public settablaGlobal(value: tablaSimbolo) {
     this.tablaGlobal = value;
   }
+  
 }

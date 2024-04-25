@@ -27,7 +27,7 @@ const tocast = require('./Instructions/Casteo');
 const insdowhile = require('./Instructions/DuWhile');
 const ternario = require('./Instructions/Operadorternario');
 //const Break = require('./Instructions/BreakAuxiliar');
-//const { agregarVariable, obtenerVariable, concatenacionl, limpieza }; =require("./Instructions/identificadores");
+const { agregarVariable, obtenerVariable, concatenacionl, limpieza } =require("./Instructions/identificadores");
 const instruccionfor = require('./Instructions/Instfor');
 %}
 
@@ -166,8 +166,7 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION     {$1.push($2); $$=$1;}
             |INSTRUCCION                     {$$=[$1];}
 ;
 
-INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1}
-        //DA                              {$$=$1;}
+INSTRUCCION : DECLARACION PUNTOYCOMA    {$$=$1;}
         |ASIGNACION PUNTOYCOMA        {$$=$1;}
         |FUNCIONCOUT                    {$$=$1;}
         |INSTRUCCIONBREAK PUNTOYCOMA //              {$$=$1;}//se agregó para el caso de break    |AGREGADOS Y NO SE SI SIRVEN 
@@ -187,15 +186,13 @@ AUMENTODECRE: IDENTIFICADOR INCREMENTO  PUNTOYCOMA     {$$=new incremento.defaul
         |IDENTIFICADOR DECREMENTO  PUNTOYCOMA     {$$=new decremento.default($1,@1.first_line,@1.first_column);}
 ;
 
-//ASIGNACION:  IDENTIFICADOR IGUAL OTROS PUNTOYCOMA {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);} creo que este esta de mas
-//;
 
 //para lista de asignaciones hacer la misma logica de instrucciones
 WHILEINS: RESERVADAWHILE PARABRE EXPRESION PARCIERRA LLAVEABRE INSTRUCCIONES LLAVECIERRA
         {$$=new whileIns.default($3,$6,@1.first_line,@1.first_column);}
 ;
 
-CICLODOWHILE: RDO ENCAPSULAMIENTO RESERVADAWHILE PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$= new insdowhile.default($5,$2,@1.first_line,@1.first_column);console.log("entrando al for");}
+CICLODOWHILE: RDO ENCAPSULAMIENTO RESERVADAWHILE PARABRE EXPRESION PARCIERRA PUNTOYCOMA {$$= new insdowhile.default($5,$2,@1.first_line,@1.first_column);}
 ;
 //CREANDO EL IF Y ELSE
 
@@ -248,23 +245,21 @@ INSTRUCCIONFOR:  RFOR PARABRE TIPOSFOR PUNTOYCOMA EXPRESION PUNTOYCOMA ACTUALIZA
                  //for   (     dec-asig     ;       expt         ;           )
 ;
 
-ASIGNACION: IDENTIFICADOR IGUAL EXPRESION  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);console.log("soy asinacion");}
+ASIGNACION: LISTA_IDENTIFICADORES IGUAL EXPRESION  {$$=new asignacionv.default($1,$3,@1.first_line,@1.first_column);console.log("soy asinacion");limpieza();}
 ;
-DECLARACION : R_INT IDENTIFICADOR IGUAL OPCIONES  {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);}
-        |R_DOUBLE  IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.DECIMAL),$4,@1.first_line,@1.first_column);}
-        |R_BOOL    IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);}
-        |R_CHAR    IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CARACTER),$4,@1.first_line,@1.first_column);}
-        |R_CADENA  IDENTIFICADOR IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);}
+DECLARACION : R_INT LISTA_IDENTIFICADORES IGUAL OPCIONES  {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.ENTERO),$4,@1.first_line,@1.first_column);limpieza();}
+        |R_DOUBLE  LISTA_IDENTIFICADORES IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.DECIMAL),$4,@1.first_line,@1.first_column);limpieza();}
+        |R_BOOL    LISTA_IDENTIFICADORES IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.BOOLEAN),$4,@1.first_line,@1.first_column);limpieza();}
+        |R_CHAR    LISTA_IDENTIFICADORES IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CARACTER),$4,@1.first_line,@1.first_column);limpieza();}
+        |R_CADENA  LISTA_IDENTIFICADORES IGUAL OPCIONES   {$$=new declaracion.default($2,new Tipo.default(Tipo.DataType.CADENA),$4,@1.first_line,@1.first_column);limpieza();}
 
 ;
 OPCIONES: EXPRESION     {$$=$1;}
         |FUNCIONCASTEO  {$$=$1;}
 ;
-LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {$1.push($3); $$=$1;}
-        | IDENTIFICADOR                                                     {$$=[$1];}
+LISTA_IDENTIFICADORES : LISTA_IDENTIFICADORES COMA IDENTIFICADOR            {agregarVariable($3);concatenacionl($1);$$=obtenerVariable();}
+        | IDENTIFICADOR                                                     {agregarVariable($1);$$=obtenerVariable();}
 ;
-
-
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5.13 OPERACIONES ARITMETICAS <<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -382,3 +377,5 @@ FUNCIONCSTR: EXPRESION PUNTO C_STR PARABRE PARCIERRA PUNTOYCOMA
 FUNCIONEXECUTE: EXECUTE IDENTIFICADOR PARABRE PARCIERRA PUNTOYCOMA 
         |EXECUTE IDENTIFICADOR PARABRE CORCHETEABRE EXPRESION CORCHETECIERRA PARCIERRA PUNTOYCOMA
 ;
+
+

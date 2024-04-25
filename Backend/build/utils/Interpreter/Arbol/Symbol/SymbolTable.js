@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class SymbolTable {
     constructor(anterior) {
+        this.tablasimbolos = []; //esto es nuevo
         this.tablaAnterior = anterior;
         this.tablaActual = new Map();
+        this.tablasimbolos = []; //esto es nuevo
     }
     getValor(id) {
         let valor = this.tablaActual.get(id);
@@ -33,6 +35,7 @@ class SymbolTable {
             }
             if (!oldValue)
                 console.log('Error la variable no existe'); //Si el valor anterior nunca existio la variable que se trata de actualizar no existe
+            this.tablasimbolos.push(new Map(this.tablaActual)); //se guarda la tabla actual en la lista de tablas
         }
         return null;
     }
@@ -56,6 +59,19 @@ class SymbolTable {
             throw new Error(`Error Semántico: No se encontró la variable ${identifier}`);
         }
         return symbol.tipoDato; // Devuelve el tipo de dato del símbolo
+    }
+    creartablasimbolos() {
+        this.tablaActual.forEach((value, key) => {
+            console.log(`Key: ${key}, Value: ${value}`);
+        });
+    }
+    getlistatablas() {
+        let tablax = []; // Explicitly declare the type as an array of strings
+        this.tablaActual.forEach((value, key) => {
+            console.log(`Key: ${key}, Value: ${value}`);
+            tablax.push((`Key: ${key}, Value: ${value}`));
+        });
+        return tablax;
     }
 }
 exports.default = SymbolTable;

@@ -22,4 +22,5 @@ var DataType;
     DataType[DataType["BOOLEAN"] = 4] = "BOOLEAN";
     DataType[DataType["IDENTIFICADOR"] = 5] = "IDENTIFICADOR";
     DataType[DataType["INDEFINIDO"] = 6] = "INDEFINIDO";
+    DataType[DataType["VOID"] = 7] = "VOID";
 })(DataType || (exports.DataType = DataType = {}));
